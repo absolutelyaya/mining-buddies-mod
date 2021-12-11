@@ -1,0 +1,16 @@
+{
+  "required": true,
+  "minVersion": "0.8",
+  "package": "yaya.miningbuddies.mixin",
+  "compatibilityLevel": "JAVA_16",
+  "mixins": [
+    "MixinPlayerHUD",
+    "MixinServerResourceManager",
+    "PlayerEntityMixin"
+  ],
+  "client": [
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  }
+}

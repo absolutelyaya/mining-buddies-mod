@@ -1,0 +1,29 @@
+{
+  "schemaVersion": 1,
+  "id": "miningbuddies",
+  "version": "${version}",
+  "name": "MiningBuddies",
+  "description": "Adds little tamagotchi like pets to minecraft!",
+  "authors": [
+    "Absolutelyaya"
+  ],
+  "contact": {
+    "repo": "https://github.com/yaya-nyan/mining-buddies-mod"
+  },
+  "license": "MIT",
+  "icon": "assets/miningbuddies/icon.png",
+  "environment": "*",
+  "entrypoints": {
+    "client": ["yaya.miningbuddies.client.MiningBuddiesClientMod"],
+    "main": ["yaya.miningbuddies.MiningBuddiesMod"],
+    "modmenu": ["yaya.miningbuddies.ModMenu"]
+  },
+  "mixins": [
+    "MiningBuddies.mixins.json"
+  ],
+  "depends": {
+    "fabricloader": ">=0.12.11",
+    "fabric": "*",
+    "minecraft": "1.18.1"
+  }
+}
