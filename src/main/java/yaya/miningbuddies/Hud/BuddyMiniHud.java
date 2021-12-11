@@ -30,4 +30,7 @@ public class BuddyMiniHud extends DrawableHelper
 		}
 		matrices.pop();
 	}
+	
+	///TODO: make buddies move/animated
+	///TODO: make buddies react to stuff (like finding diamonds)
 }

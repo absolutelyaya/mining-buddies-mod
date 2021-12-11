@@ -74,4 +74,7 @@ public class Buddy
 	{
 		return identifier;
 	}
+	
+	///TODO: Store spritecheet information (sprite size, absolute size)
+	///TODO: Finding requirements (Biome, height, temperature, broken blocks, chance, ...)
 }
