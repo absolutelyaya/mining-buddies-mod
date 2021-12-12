@@ -1,0 +1,9 @@
+{
+  "buddy.get": "You've got a new Buddy! It's a %d!",
+
+  "commands.givebuddy.success.self": "Gave you a %d!",
+  "commands.givebuddy.success.other": "Gave %d a %d!",
+  "commands.givebuddy.fail.alreadyowned.self": "§cYou already own a buddy of that type.",
+  "commands.givebuddy.fail.alreadyowned.other": "§c%d already owns a buddy of that type.",
+  "commands.givebuddy.fail.invalidtype": "§c%d isn't a valid buddy type!"
+}

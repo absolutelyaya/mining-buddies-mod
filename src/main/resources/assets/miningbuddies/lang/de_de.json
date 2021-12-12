@@ -1,0 +1,9 @@
+{
+  "buddy.get": "Du hast einen neuen Kumpel bekommen! Es ist ein %d!",
+
+  "commands.givebuddy.success.self": "Dir wurde ein %d gegeben!",
+  "commands.givebuddy.success.other": "%d wurde ein %d gegeben!",
+  "commands.givebuddy.fail.alreadyowned.self": "§cDu hast bereits einen Kumpel dieser Art.",
+  "commands.givebuddy.fail.alreadyowned.other": "§c%d hat bereits einen Kumpel dieser Art.",
+  "commands.givebuddy.fail.invalidtype": "§c%d ist keine gültige Kumpel Art!"
+}

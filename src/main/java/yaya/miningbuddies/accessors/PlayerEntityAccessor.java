@@ -13,4 +13,6 @@ public interface PlayerEntityAccessor
 	List<Buddy> getOwnedBuddies();
 	
 	void setOwnedBuddies(List<Buddy> values);
+	
+	boolean addBuddy(Buddy b);
 }

@@ -85,4 +85,23 @@ public abstract class PlayerEntityMixin implements PlayerEntityAccessor
 			System.out.println("applied default buddies");
 		}
 	}
+	
+	@Override
+	public boolean addBuddy(Buddy b)
+	{
+		if(hasBuddyOfType(b.getType()))
+			return false;
+		ownedBuddies.add(b);
+		return true;
+	}
+	
+	public boolean hasBuddyOfType(Identifier type)
+	{
+		for(Buddy b : ownedBuddies)
+		{
+			if(b.getType().equals(type))
+				return true;
+		}
+		return false;
+	}
 }
