@@ -1,7 +1,7 @@
 package yaya.miningbuddies.client;
 
 import net.fabricmc.api.ClientModInitializer;
-import yaya.miningbuddies.Hud.BuddyMiniHud;
+import yaya.miningbuddies.GUI.Hud.BuddyMiniHud;
 
 @net.fabricmc.api.Environment(net.fabricmc.api.EnvType.CLIENT)
 public class MiningBuddiesClientMod implements ClientModInitializer
