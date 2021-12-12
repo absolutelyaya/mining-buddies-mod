@@ -4,6 +4,7 @@ import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.DrawableHelper;
 import net.minecraft.client.util.math.MatrixStack;
+import net.minecraft.client.util.math.Vector2f;
 import net.minecraft.util.Identifier;
 import yaya.miningbuddies.Buddies.Buddy;
 import yaya.miningbuddies.MiningBuddiesMod;
@@ -25,12 +26,14 @@ public class BuddyMiniHud extends DrawableHelper
 		{
 			matrices.translate(16, 16, 1);
 			RenderSystem.setShaderTexture(0,
-					new Identifier(b.getIdentifier().getNamespace(), "textures/buddies/" + b.getIdentifier().getPath() + ".png"));
-			drawTexture(matrices, 0, 0, 0, 0, 32, 32, 32, 32);
+					new Identifier(b.getType().getNamespace(), "textures/buddies/" + b.getType().getPath() + ".png"));
+			Vector2f textureSize = b.getTextureSize();
+			drawTexture(matrices, 0, 0, 0, 0, 32, 32, (int)textureSize.getX(), (int)textureSize.getY());
 		}
 		matrices.pop();
 	}
 	
+	///TODO: make positioning modifiable
 	///TODO: make buddies move/animated
 	///TODO: make buddies react to stuff (like finding diamonds)
 }

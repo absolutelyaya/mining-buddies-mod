@@ -2,6 +2,7 @@ package yaya.miningbuddies.Registries;
 
 import com.google.common.collect.ImmutableMap;
 import com.google.gson.*;
+import net.minecraft.client.util.math.Vector2f;
 import net.minecraft.resource.JsonDataLoader;
 import net.minecraft.resource.ResourceManager;
 import net.minecraft.util.Identifier;
@@ -11,6 +12,8 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import yaya.miningbuddies.Buddies.Buddy;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 public class BuddyManager extends JsonDataLoader
@@ -55,11 +58,19 @@ public class BuddyManager extends JsonDataLoader
 	
 	public static Buddy getBuddy(Identifier id)
 	{
+		System.out.println(id.toString());
 		return buddies.get(id);
+	}
+	
+	public static List<Identifier> getBuddyTypes()
+	{
+		return new ArrayList<>(buddies.keySet());
 	}
 	
 	public static Buddy deserialize(JsonObject json, Identifier identifier)
 	{
-		return new Buddy(JsonHelper.getString(json, "name"), identifier);
+		JsonObject textureSize = JsonHelper.getObject(json, "textureSize");
+		Vector2f size = new Vector2f(JsonHelper.getInt(textureSize, "x"), JsonHelper.getInt(textureSize, "y"));
+		return new Buddy(JsonHelper.getString(json, "name"), identifier, size);
 	}
 }
