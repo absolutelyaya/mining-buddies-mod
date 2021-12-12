@@ -10,9 +10,11 @@ import net.minecraft.util.JsonHelper;
 import net.minecraft.util.profiler.Profiler;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import yaya.miningbuddies.Buddies.Buddy;
+import yaya.miningbuddies.Buddies.Animation;
+import yaya.miningbuddies.Buddies.BuddyType;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -20,7 +22,7 @@ public class BuddyManager extends JsonDataLoader
 {
 	private static final Logger LOGGER = LogManager.getLogger();
 	private static final Gson GSON = (new GsonBuilder()).setPrettyPrinting().disableHtmlEscaping().create();
-	private static Map<Identifier, Buddy> buddies = ImmutableMap.of();
+	private static Map<Identifier, BuddyType> buddies = ImmutableMap.of();
 	private boolean errored;
 	
 	public BuddyManager()
@@ -32,7 +34,7 @@ public class BuddyManager extends JsonDataLoader
 	protected void apply(Map<Identifier, JsonElement> prepared, ResourceManager manager, Profiler profiler)
 	{
 		this.errored = false;
-		ImmutableMap.Builder<Identifier, Buddy> builder = ImmutableMap.builder();
+		ImmutableMap.Builder<Identifier, BuddyType> builder = ImmutableMap.builder();
 		
 		for (Map.Entry<Identifier, JsonElement> identifierJsonElementEntry : prepared.entrySet())
 		{
@@ -40,8 +42,8 @@ public class BuddyManager extends JsonDataLoader
 			
 			try
 			{
-				Buddy buddy = deserialize(JsonHelper.asObject(identifierJsonElementEntry.getValue(), "top element"), identifier);
-				builder.put(identifier, buddy);
+				BuddyType type = deserialize(JsonHelper.asObject(identifierJsonElementEntry.getValue(), "top element"), identifier);
+				builder.put(identifier, type);
 			}
 			catch (IllegalArgumentException | JsonParseException e)
 			{
@@ -56,7 +58,7 @@ public class BuddyManager extends JsonDataLoader
 		return this.errored;
 	}
 	
-	public static Buddy getBuddy(Identifier id)
+	public static BuddyType getBuddyType(Identifier id)
 	{
 		System.out.println(id.toString());
 		return buddies.get(id);
@@ -67,10 +69,22 @@ public class BuddyManager extends JsonDataLoader
 		return new ArrayList<>(buddies.keySet());
 	}
 	
-	public static Buddy deserialize(JsonObject json, Identifier identifier)
+	public static BuddyType deserialize(JsonObject json, Identifier identifier)
 	{
+		String name = JsonHelper.getString(json, "name");
 		JsonObject textureSize = JsonHelper.getObject(json, "textureSize");
-		Vector2f size = new Vector2f(JsonHelper.getInt(textureSize, "x"), JsonHelper.getInt(textureSize, "y"));
-		return new Buddy(JsonHelper.getString(json, "name"), identifier, size);
+		Vector2f totalSize = new Vector2f(JsonHelper.getInt(textureSize, "totalX"), JsonHelper.getInt(textureSize, "totalY"));
+		Vector2f buddySize = new Vector2f(JsonHelper.getInt(textureSize, "buddyX"), JsonHelper.getInt(textureSize, "buddyY"));
+		JsonArray animationArray = JsonHelper.getArray(json, "animations");
+		Map<String, Animation> animations = new HashMap<>();
+		for (int i = 0; i < animationArray.size(); i++)
+		{
+			JsonObject animObject = animationArray.get(i).getAsJsonObject();
+			String animId = JsonHelper.getString(animObject, "id");
+			int frames = JsonHelper.getInt(animObject, "frames");
+			double interval = JsonHelper.getDouble(animObject, "interval");
+			animations.put(animId, new Animation(i, frames, interval));
+		}
+		return new BuddyType(name, identifier, totalSize, buddySize, animations);
 	}
 }

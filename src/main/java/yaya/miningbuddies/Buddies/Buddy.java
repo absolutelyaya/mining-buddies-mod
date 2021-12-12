@@ -1,6 +1,5 @@
 package yaya.miningbuddies.Buddies;
 
-import net.minecraft.client.util.math.Vector2f;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.util.Identifier;
 import yaya.miningbuddies.Registries.BuddyManager;
@@ -9,28 +8,23 @@ import java.util.UUID;
 
 public class Buddy
 {
-	public final String name;
-	private String nickName;
 	private final UUID uuid;
-	private final Identifier type;
-	private final Vector2f textureSize;
+	private final BuddyType type;
 	
-	public Buddy(String name, Identifier identifier, Vector2f textureSize)
+	private String nickName;
+	
+	public Buddy(BuddyType type)
 	{
-		this.name = name;
-		this.nickName = name;
-		this.type = identifier;
+		this.type = type;
+		this.nickName = type.name;
 		this.uuid = UUID.randomUUID();
-		this.textureSize = textureSize;
 	}
 	
-	private Buddy(Identifier identifier, String name, String nickName, UUID id, Vector2f textureSize)
+	private Buddy(BuddyType type, String nickName, UUID id)
 	{
-		this.name = name;
 		this.nickName = nickName;
 		this.uuid = id;
-		this.type = identifier;
-		this.textureSize = textureSize;
+		this.type = type;
 	}
 	
 	public static NbtCompound serialize(Buddy b)
@@ -43,7 +37,7 @@ public class Buddy
 		}
 		buddyData.putString("nickname", b.getNickName());
 		buddyData.putUuid("id", b.getUuid());
-		buddyData.putString("type", b.getType().toString());
+		buddyData.putString("type", b.getType().getID().toString());
 		return buddyData;
 	}
 	
@@ -51,14 +45,14 @@ public class Buddy
 	{
 		if(nbt == null)
 			return null;
-		String type = nbt.getString("type");
-		if(type.matches("null"))
+		String typeId = nbt.getString("type");
+		if(typeId.matches("null"))
 			return null;
-		String[] parts = type.split(":");
+		String[] parts = typeId.split(":");
 		System.out.println("deserializing " + nbt.asString());
 		Identifier identifier = new Identifier(parts[0], parts[1]);
-		Buddy base = BuddyManager.getBuddy(identifier);
-		return new Buddy(identifier, base.name, nbt.getString("nickname"), nbt.getUuid("id"), base.getTextureSize());
+		BuddyType type = BuddyManager.getBuddyType(identifier);
+		return new Buddy(type, nbt.getString("nickname"), nbt.getUuid("id"));
 	}
 	
 	public String getNickName()
@@ -76,14 +70,9 @@ public class Buddy
 		return uuid;
 	}
 	
-	public Identifier getType()
+	public BuddyType getType()
 	{
 		return type;
-	}
-	
-	public Vector2f getTextureSize()
-	{
-		return textureSize;
 	}
 	
 	///TODO: Store spritecheet information (texture size, animation data)

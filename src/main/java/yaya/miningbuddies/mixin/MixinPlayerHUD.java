@@ -17,9 +17,13 @@ public class MixinPlayerHUD extends DrawableHelper
 {
 	@Shadow @Final private MinecraftClient client;
 	
+	long lastFrameTime;
+	
 	@Inject(method="render", at=@At("HEAD"))
 	public void onRender(MatrixStack matrices, float tickDelta, CallbackInfo ci)
 	{
-		MiningBuddiesClientMod.BUDDY_MINI_HUD.render(matrices, client);
+		float deltaTime = (float)(System.currentTimeMillis() - lastFrameTime) / 1000;
+		MiningBuddiesClientMod.BUDDY_MINI_HUD.render(matrices, client, deltaTime);
+		lastFrameTime = System.currentTimeMillis();
 	}
 }

@@ -2,7 +2,6 @@ package yaya.miningbuddies.Commands;
 
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
-import com.mojang.brigadier.builder.RequiredArgumentBuilder;
 import com.mojang.brigadier.context.CommandContext;
 import net.minecraft.command.CommandSource;
 import net.minecraft.command.argument.EntityArgumentType;
@@ -15,6 +14,7 @@ import net.minecraft.util.Identifier;
 import net.minecraft.util.Util;
 import net.minecraft.world.GameRules;
 import yaya.miningbuddies.Buddies.Buddy;
+import yaya.miningbuddies.Buddies.BuddyType;
 import yaya.miningbuddies.Registries.BuddyManager;
 import yaya.miningbuddies.accessors.PlayerEntityAccessor;
 
@@ -37,7 +37,7 @@ public class GiveBuddyCommand
 		dispatcher.register(literalArgumentBuilder);
 	}
 	
-	private static void sendFeedback(ServerCommandSource source, ServerPlayerEntity player, boolean success, Buddy b)
+	private static void sendFeedback(ServerCommandSource source, ServerPlayerEntity player, boolean success, BuddyType b)
 	{
 		if(success)
 		{
@@ -67,16 +67,17 @@ public class GiveBuddyCommand
 	{
 		int i = 0;
 		
-		Buddy b = BuddyManager.getBuddy(buddyType);
-		if(b == null && context.getSource().getEntity() != null)
+		BuddyType b = BuddyManager.getBuddyType(buddyType);
+		if(b == null)
 		{
-			context.getSource().getEntity()
-					.sendSystemMessage(new TranslatableText("commands.givebuddy.fail.invalidtype", buddyType), Util.NIL_UUID);
+			if(context.getSource().getEntity() != null)
+				context.getSource().getEntity()
+						.sendSystemMessage(new TranslatableText("commands.givebuddy.fail.invalidtype", buddyType), Util.NIL_UUID);
 			return 0;
 		}
 		for (ServerPlayerEntity serverPlayerEntity : targets)
 		{
-			sendFeedback(context.getSource(), serverPlayerEntity, ((PlayerEntityAccessor)serverPlayerEntity).addBuddy(b), b);
+			sendFeedback(context.getSource(), serverPlayerEntity, ((PlayerEntityAccessor)serverPlayerEntity).addBuddy(new Buddy(b)), b);
 			++i;
 		}
 		return i;

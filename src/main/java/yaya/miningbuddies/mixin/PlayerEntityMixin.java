@@ -14,6 +14,7 @@ import yaya.miningbuddies.Buddies.Buddy;
 import yaya.miningbuddies.MiningBuddiesMod;
 import yaya.miningbuddies.Registries.BuddyManager;
 import yaya.miningbuddies.accessors.PlayerEntityAccessor;
+import yaya.miningbuddies.client.MiningBuddiesClientMod;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -58,6 +59,10 @@ public abstract class PlayerEntityMixin implements PlayerEntityAccessor
 	@Override
 	public void setActiveBuddy(Buddy b)
 	{
+		if(b != null)
+			MiningBuddiesClientMod.BUDDY_MINI_HUD.setBuddyType(b.getType());
+		else
+			MiningBuddiesClientMod.BUDDY_MINI_HUD.setBuddyType(null);
 		activeBuddy = b;
 	}
 	
@@ -80,7 +85,7 @@ public abstract class PlayerEntityMixin implements PlayerEntityAccessor
 			this.ownedBuddies = ownedBuddies;
 		else
 		{
-			this.ownedBuddies = List.of(BuddyManager.getBuddy(new Identifier(MiningBuddiesMod.MOD_ID, "glare")));
+			this.ownedBuddies = List.of(new Buddy(BuddyManager.getBuddyType(new Identifier(MiningBuddiesMod.MOD_ID, "glare"))));
 			setActiveBuddy(this.ownedBuddies.get(0));
 			System.out.println("applied default buddies");
 		}
@@ -89,7 +94,7 @@ public abstract class PlayerEntityMixin implements PlayerEntityAccessor
 	@Override
 	public boolean addBuddy(Buddy b)
 	{
-		if(hasBuddyOfType(b.getType()))
+		if(hasBuddyOfType(b.getType().getID()))
 			return false;
 		ownedBuddies.add(b);
 		return true;

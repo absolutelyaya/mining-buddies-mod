@@ -1,7 +1,22 @@
 {
   "name": "Glare",
   "textureSize": {
-    "x": 32,
-    "y": 64
-  }
+    "totalX": 64,
+    "totalY": 96,
+    "buddyX": 32,
+    "buddyY": 32
+  },
+  "animations":
+  [
+    {
+      "id": "idle",
+      "frames": 1,
+      "interval": 0.2
+    },
+    {
+      "id": "cheer",
+      "frames": 1,
+      "interval": 0.2
+    }
+  ]
 }
