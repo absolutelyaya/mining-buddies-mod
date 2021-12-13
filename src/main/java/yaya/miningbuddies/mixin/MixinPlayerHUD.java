@@ -24,6 +24,7 @@ public class MixinPlayerHUD extends DrawableHelper
 	{
 		float deltaTime = (float)(System.currentTimeMillis() - lastFrameTime) / 1000;
 		MiningBuddiesClientMod.BUDDY_MINI_HUD.render(matrices, client, deltaTime);
+		MiningBuddiesClientMod.NEW_BUDDY_POPUP_HUD.render(matrices, client, deltaTime);
 		lastFrameTime = System.currentTimeMillis();
 	}
 }

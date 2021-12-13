@@ -60,7 +60,6 @@ public class BuddyManager extends JsonDataLoader
 	
 	public static BuddyType getBuddyType(Identifier id)
 	{
-		System.out.println(id.toString());
 		return buddies.get(id);
 	}
 	

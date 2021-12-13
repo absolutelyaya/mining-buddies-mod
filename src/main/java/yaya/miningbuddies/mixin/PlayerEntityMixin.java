@@ -94,9 +94,11 @@ public abstract class PlayerEntityMixin implements PlayerEntityAccessor
 	@Override
 	public boolean addBuddy(Buddy b)
 	{
-		if(hasBuddyOfType(b.getType().getID()))
-			return false;
+		//disabled for testing purposes. DON'T FORGET TO RE-ENABLE THIS
+		//if(hasBuddyOfType(b.getType().getID()))
+		//	return false;
 		ownedBuddies.add(b);
+		MiningBuddiesClientMod.NEW_BUDDY_POPUP_HUD.onGetNewBuddy(b.getType());
 		return true;
 	}
 	
@@ -104,7 +106,7 @@ public abstract class PlayerEntityMixin implements PlayerEntityAccessor
 	{
 		for(Buddy b : ownedBuddies)
 		{
-			if(b.getType().equals(type))
+			if(b.getType().getID().equals(type))
 				return true;
 		}
 		return false;

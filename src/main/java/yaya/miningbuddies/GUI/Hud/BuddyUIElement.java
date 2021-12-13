@@ -7,6 +7,7 @@ import net.minecraft.client.util.math.Vector2f;
 import net.minecraft.util.Identifier;
 import yaya.miningbuddies.Buddies.Animation;
 import yaya.miningbuddies.Buddies.BuddyType;
+import yaya.miningbuddies.Events.BuddyUIEReachDestinationCallback;
 
 import java.util.Random;
 
@@ -16,6 +17,7 @@ public class BuddyUIElement extends DrawableHelper
 {
 	final Vector2f movementBounds;
 	final Random random;
+	final boolean moveRandomly;
 	
 	float frameTime;
 	int frame;
@@ -27,19 +29,22 @@ public class BuddyUIElement extends DrawableHelper
 	boolean moving;
 	boolean flip;
 	float moveCooldown;
+	float alpha = 1f;
+	double speedMultiplier = 1;
 	
-	public BuddyUIElement(Vector2f movementBounds)
+	public BuddyUIElement(Vector2f movementBounds, boolean moveRandomly)
 	{
 		this.movementBounds = movementBounds;
+		this.moveRandomly = moveRandomly;
 		random = new Random();
 	}
 	
 	public void render(MatrixStack matrices, float deltaTime)
 	{
-		update(deltaTime);
 		matrices.translate(pos, 0, 0);
 		if(buddyType != null)
 		{
+			update(deltaTime);
 			frameTime += deltaTime;
 			if(activeAnimation != null && frameTime > activeAnimation.interval())
 			{
@@ -49,6 +54,7 @@ public class BuddyUIElement extends DrawableHelper
 					frame = 0;
 			}
 			
+			RenderSystem.setShaderColor(1f, 1f, 1f, alpha);
 			RenderSystem.setShaderTexture(0,
 					new Identifier(buddyType.getID().getNamespace(), "textures/buddies/" + buddyType.getID().getPath() + ".png"));
 			Vector2f textureSize = buddyType.getTextureSize();
@@ -61,16 +67,17 @@ public class BuddyUIElement extends DrawableHelper
 	void update(float deltaTime)
 	{
 		double moveSpeed = buddyType.getMoveSpeed();
-		if(abs(destination - pos) > moveSpeed * deltaTime)
+		if(abs(destination - pos) > moveSpeed * speedMultiplier * deltaTime)
 		{
 			flip = pos < destination;
-			pos = pos + (flip ? 1 : -1) * moveSpeed * deltaTime;
+			pos = pos + (flip ? 1 : -1) * moveSpeed * speedMultiplier * deltaTime;
 			moving = true;
 		}
 		else if(moving && state.equals(AnimationState.MOVE))
 		{
 			moving = false;
 			moveCooldown = random.nextFloat() * 6;
+			BuddyUIEReachDestinationCallback.EVENT.invoker().interact(this);
 		}
 		
 		if(moving && !state.equals(AnimationState.MOVE))
@@ -82,7 +89,7 @@ public class BuddyUIElement extends DrawableHelper
 		{
 			if(moveCooldown > 0)
 				moveCooldown -= deltaTime;
-			else
+			else if(moveRandomly)
 			{
 				destination = random.nextFloat() * movementBounds.getY() * 2 + movementBounds.getX();
 			}
@@ -92,6 +99,11 @@ public class BuddyUIElement extends DrawableHelper
 	public void setDestination(double destination)
 	{
 		this.destination = destination;
+	}
+	
+	public void setPos(double pos)
+	{
+		this.pos = pos;
 	}
 	
 	public void setBuddyType(BuddyType buddyType)
@@ -109,6 +121,16 @@ public class BuddyUIElement extends DrawableHelper
 		this.frameTime = 0;
 		if(buddyType != null)
 			this.activeAnimation = buddyType.getAnimation(state.name().toLowerCase());
+	}
+	
+	public void setAlpha(float alpha)
+	{
+		this.alpha = alpha;
+	}
+	
+	public void setSpeedMultiplier(double speedMultiplier)
+	{
+		this.speedMultiplier = speedMultiplier;
 	}
 	
 	public enum AnimationState

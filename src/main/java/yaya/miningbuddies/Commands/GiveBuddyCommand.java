@@ -23,7 +23,8 @@ import java.util.Collections;
 
 public class GiveBuddyCommand
 {
-	public static void register(CommandDispatcher<ServerCommandSource> dispatcher) {
+	public static void register(CommandDispatcher<ServerCommandSource> dispatcher)
+	{
 		LiteralArgumentBuilder<ServerCommandSource> literalArgumentBuilder = CommandManager.literal("givebuddy")
 				.requires((source) -> source.hasPermissionLevel(2))
 				.then(CommandManager.argument("buddy", IdentifierArgumentType.identifier())
@@ -75,9 +76,9 @@ public class GiveBuddyCommand
 						.sendSystemMessage(new TranslatableText("commands.givebuddy.fail.invalidtype", buddyType), Util.NIL_UUID);
 			return 0;
 		}
-		for (ServerPlayerEntity serverPlayerEntity : targets)
+		for (ServerPlayerEntity target : targets.stream().toList())
 		{
-			sendFeedback(context.getSource(), serverPlayerEntity, ((PlayerEntityAccessor)serverPlayerEntity).addBuddy(new Buddy(b)), b);
+			sendFeedback(context.getSource(), target, ((PlayerEntityAccessor)target).addBuddy(new Buddy(b)), b);
 			++i;
 		}
 		return i;

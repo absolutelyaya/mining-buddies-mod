@@ -11,11 +11,11 @@ import yaya.miningbuddies.MiningBuddiesMod;
 
 public class BuddyMiniHud extends DrawableHelper
 {
-	BuddyUIElement buddyWidget;
+	BuddyUIElement buddyUIE;
 	
 	public BuddyMiniHud()
 	{
-		buddyWidget = new BuddyUIElement(new Vector2f(-16, 16));
+		buddyUIE = new BuddyUIElement(new Vector2f(-16, 16), true);
 	}
 	
 	public void render(MatrixStack matrices, MinecraftClient client, float deltaTime)
@@ -27,17 +27,17 @@ public class BuddyMiniHud extends DrawableHelper
 		RenderSystem.setShaderColor(1f, 1f, 1f, 1f);
 		RenderSystem.setShaderTexture(0, new Identifier(MiningBuddiesMod.MOD_ID, "textures/backgrounds/bg1.png"));
 		drawTexture(matrices, 0, 0, 0, 0, 64, 64, 64, 64);
-		if (buddyWidget != null)
+		if (buddyUIE != null)
 		{
 			matrices.translate(16, 16, 1);
-			buddyWidget.render(matrices, deltaTime);
+			buddyUIE.render(matrices, deltaTime);
 		}
 		matrices.pop();
 	}
 	
 	public void setBuddyType(BuddyType buddyType)
 	{
-		buddyWidget.setBuddyType(buddyType);
+		buddyUIE.setBuddyType(buddyType);
 	}
 	
 	///TODO: make positioning modifiable
