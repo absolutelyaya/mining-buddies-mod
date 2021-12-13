@@ -13,14 +13,16 @@ public class BuddyType
 	private final Vector2f textureSize;
 	private final Vector2f buddySize;
 	private final Map<String, Animation> animations;
+	private final double moveSpeed;
 	
-	public BuddyType(String name, Identifier identifier, Vector2f textureSize, Vector2f buddySize, Map<String, Animation> animations)
+	public BuddyType(String name, Identifier identifier, Vector2f textureSize, Vector2f buddySize, Map<String, Animation> animations, double movementSpeed)
 	{
 		this.name = name;
 		this.id = identifier;
 		this.buddySize = buddySize;
 		this.textureSize = textureSize;
 		this.animations = ImmutableMap.copyOf(animations);
+		this.moveSpeed = movementSpeed;
 	}
 	
 	public Identifier getID()
@@ -41,5 +43,10 @@ public class BuddyType
 	public Animation getAnimation(String id)
 	{
 		return animations.getOrDefault(id, animations.get("idle"));
+	}
+	
+	public double getMoveSpeed()
+	{
+		return moveSpeed;
 	}
 }

@@ -1,7 +1,7 @@
 {
   "name": "Glare",
   "textureSize": {
-    "totalX": 64,
+    "totalX": 192,
     "totalY": 96,
     "buddyX": 32,
     "buddyY": 32
@@ -10,13 +10,19 @@
   [
     {
       "id": "idle",
-      "frames": 2,
-      "interval": 0.2
+      "frames": 6,
+      "interval": 0.1
     },
     {
       "id": "cheer",
       "frames": 1,
-      "interval": 0.2
+      "interval": 0.1
+    },
+    {
+      "id": "move",
+      "frames": 6,
+      "interval": 0.1
     }
-  ]
+  ],
+  "moveSpeed": 8
 }

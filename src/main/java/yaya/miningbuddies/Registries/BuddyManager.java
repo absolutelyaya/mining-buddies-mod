@@ -85,6 +85,7 @@ public class BuddyManager extends JsonDataLoader
 			double interval = JsonHelper.getDouble(animObject, "interval");
 			animations.put(animId, new Animation(i, frames, interval));
 		}
-		return new BuddyType(name, identifier, totalSize, buddySize, animations);
+		double moveSpeed = JsonHelper.getDouble(json, "moveSpeed");
+		return new BuddyType(name, identifier, totalSize, buddySize, animations, moveSpeed);
 	}
 }
