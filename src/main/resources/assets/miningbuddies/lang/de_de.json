@@ -5,5 +5,14 @@
   "commands.givebuddy.success.other": "%d wurde ein %d gegeben!",
   "commands.givebuddy.fail.alreadyowned.self": "§cDu hast bereits einen Kumpel dieser Art.",
   "commands.givebuddy.fail.alreadyowned.other": "§c%d hat bereits einen Kumpel dieser Art.",
-  "commands.givebuddy.fail.invalidtype": "§c%d ist keine gültige Kumpel Art!"
+  "commands.givebuddy.fail.invalidtype": "§c%d ist keine gültige Kumpel Art!",
+
+  "modmenu.descriptionTranslation.miningbuddies": "Fügt kleine Tamagotchi-ähnliche Haustiere zu minecraft hinzu!",
+  "screen.miningbuddies.options.title": "Mining Buddies Optionen",
+  "setting.miningbuddies.mini-buddy-hud-pos": "Mini-Kumpel pos",
+  "setting.miningbuddies.mini-buddy-hud-pos.top_left": "Oben Links",
+  "setting.miningbuddies.mini-buddy-hud-pos.top_right": "Oben Rechts",
+  "setting.miningbuddies.mini-buddy-hud-pos.bottom_left": "Unten Links",
+  "setting.miningbuddies.mini-buddy-hud-pos.bottom_right": "Unten Rechts",
+  "setting.miningbuddies.show-new-buddy-popup": "\"Neuer Kumpel\"-Popup"
 }

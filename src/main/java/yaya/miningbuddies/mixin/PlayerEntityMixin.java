@@ -4,8 +4,11 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.nbt.NbtElement;
 import net.minecraft.nbt.NbtList;
+import net.minecraft.text.Text;
+import net.minecraft.text.TranslatableText;
 import net.minecraft.util.Identifier;
 import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
@@ -13,6 +16,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import yaya.miningbuddies.Buddies.Buddy;
 import yaya.miningbuddies.MiningBuddiesMod;
 import yaya.miningbuddies.Registries.BuddyManager;
+import yaya.miningbuddies.Settings.SettingsStorage;
 import yaya.miningbuddies.accessors.PlayerEntityAccessor;
 import yaya.miningbuddies.client.MiningBuddiesClientMod;
 
@@ -22,6 +26,8 @@ import java.util.List;
 @Mixin(PlayerEntity.class)
 public abstract class PlayerEntityMixin implements PlayerEntityAccessor
 {
+	@Shadow public abstract void sendMessage(Text message, boolean actionBar);
+	
 	@Unique private List<Buddy> ownedBuddies = new ArrayList<>();
 	@Unique private Buddy activeBuddy;
 	
@@ -94,11 +100,13 @@ public abstract class PlayerEntityMixin implements PlayerEntityAccessor
 	@Override
 	public boolean addBuddy(Buddy b)
 	{
-		//disabled for testing purposes. DON'T FORGET TO RE-ENABLE THIS
-		//if(hasBuddyOfType(b.getType().getID()))
-		//	return false;
+		if(hasBuddyOfType(b.getType().getID()))
+			return false;
 		ownedBuddies.add(b);
-		MiningBuddiesClientMod.NEW_BUDDY_POPUP_HUD.onGetNewBuddy(b.getType());
+		if(SettingsStorage.getBoolean("show-new-buddy-popup"))
+			MiningBuddiesClientMod.NEW_BUDDY_POPUP_HUD.onGetNewBuddy(b.getType());
+		else
+			sendMessage(new TranslatableText("buddy.get"), false);
 		return true;
 	}
 	

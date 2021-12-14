@@ -5,5 +5,14 @@
   "commands.givebuddy.success.other": "Gave %d a %d!",
   "commands.givebuddy.fail.alreadyowned.self": "§cYou already own a buddy of that type.",
   "commands.givebuddy.fail.alreadyowned.other": "§c%d already owns a buddy of that type.",
-  "commands.givebuddy.fail.invalidtype": "§c%d isn't a valid buddy type!"
+  "commands.givebuddy.fail.invalidtype": "§c%d isn't a valid buddy type!",
+
+  "modmenu.descriptionTranslation.miningbuddies": "Adds little tamagotchi like pets to minecraft!",
+  "screen.miningbuddies.options.title": "Mining Buddies Options",
+  "setting.miningbuddies.mini-buddy-hud-pos": "Mini-Buddy pos",
+  "setting.miningbuddies.mini-buddy-hud-pos.top_left": "Top Left",
+  "setting.miningbuddies.mini-buddy-hud-pos.top_right": "Top Right",
+  "setting.miningbuddies.mini-buddy-hud-pos.bottom_left": "Bottom Left",
+  "setting.miningbuddies.mini-buddy-hud-pos.bottom_right": "Bottom Right",
+  "setting.miningbuddies.show-new-buddy-popup": "\"New Buddy\"-Popup"
 }

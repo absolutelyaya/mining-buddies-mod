@@ -8,6 +8,8 @@ import net.minecraft.client.util.math.Vector2f;
 import net.minecraft.util.Identifier;
 import yaya.miningbuddies.Buddies.BuddyType;
 import yaya.miningbuddies.MiningBuddiesMod;
+import yaya.miningbuddies.Settings.Settings;
+import yaya.miningbuddies.Settings.SettingsStorage;
 
 public class BuddyMiniHud extends DrawableHelper
 {
@@ -23,7 +25,13 @@ public class BuddyMiniHud extends DrawableHelper
 		float scaledHeight = client.getWindow().getScaledHeight();
 		float scaledWidth = client.getWindow().getScaledWidth();
 		matrices.push();
-		matrices.translate(8, scaledHeight - 64 - 8, -500);
+		switch(SettingsStorage.getEnum("mini-buddy-hud-pos", Settings.PositionEnum.class))
+		{
+			case TOP_LEFT -> matrices.translate(8, 8, -500);
+			case BOTTOM_LEFT -> matrices.translate(8, scaledHeight - 64 - 8, -500);
+			case TOP_RIGHT ->matrices.translate(scaledWidth - 64 - 8, 8, -500);
+			case BOTTOM_RIGHT -> matrices.translate(scaledWidth - 64 - 8, scaledHeight - 64 - 8, -500);
+		}
 		RenderSystem.setShaderColor(1f, 1f, 1f, 1f);
 		RenderSystem.setShaderTexture(0, new Identifier(MiningBuddiesMod.MOD_ID, "textures/backgrounds/bg1.png"));
 		drawTexture(matrices, 0, 0, 0, 0, 64, 64, 64, 64);
@@ -40,6 +48,5 @@ public class BuddyMiniHud extends DrawableHelper
 		buddyUIE.setBuddyType(buddyType);
 	}
 	
-	///TODO: make positioning modifiable
 	///TODO: make buddies react to stuff (like finding diamonds)
 }

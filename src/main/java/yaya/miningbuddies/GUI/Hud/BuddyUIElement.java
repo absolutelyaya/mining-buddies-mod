@@ -1,13 +1,16 @@
 package yaya.miningbuddies.GUI.Hud;
 
 import com.mojang.blaze3d.systems.RenderSystem;
+import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.DrawableHelper;
+import net.minecraft.client.texture.TextureManager;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.client.util.math.Vector2f;
 import net.minecraft.util.Identifier;
 import yaya.miningbuddies.Buddies.Animation;
 import yaya.miningbuddies.Buddies.BuddyType;
 import yaya.miningbuddies.Events.BuddyUIEReachDestinationCallback;
+import yaya.miningbuddies.MiningBuddiesMod;
 
 import java.util.Random;
 
@@ -31,12 +34,14 @@ public class BuddyUIElement extends DrawableHelper
 	float moveCooldown;
 	float alpha = 1f;
 	double speedMultiplier = 1;
+	TextureManager textureManager;
 	
 	public BuddyUIElement(Vector2f movementBounds, boolean moveRandomly)
 	{
 		this.movementBounds = movementBounds;
 		this.moveRandomly = moveRandomly;
 		random = new Random();
+		textureManager = MinecraftClient.getInstance().getTextureManager();
 	}
 	
 	public void render(MatrixStack matrices, float deltaTime)
@@ -55,8 +60,11 @@ public class BuddyUIElement extends DrawableHelper
 			}
 			
 			RenderSystem.setShaderColor(1f, 1f, 1f, alpha);
-			RenderSystem.setShaderTexture(0,
-					new Identifier(buddyType.getID().getNamespace(), "textures/buddies/" + buddyType.getID().getPath() + ".png"));
+			Identifier texture = new Identifier(buddyType.getID().getNamespace(), "textures/buddies/" + buddyType.getID().getPath() + ".png");
+			if (textureManager.getTexture(texture) == null)
+				RenderSystem.setShaderTexture(0, new Identifier(MiningBuddiesMod.MOD_ID, "textures/buddies/missing.png"));
+			else
+				RenderSystem.setShaderTexture(0, texture);
 			Vector2f textureSize = buddyType.getTextureSize();
 			Vector2f buddySize = buddyType.getBuddySize();
 			drawTexture(matrices, 0, 0, frame * buddySize.getX(), activeAnimation.index() * buddySize.getY(),

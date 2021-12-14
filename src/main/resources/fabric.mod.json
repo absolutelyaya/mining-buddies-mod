@@ -8,7 +8,8 @@
     "Absolutelyaya"
   ],
   "contact": {
-    "repo": "https://github.com/yaya-nyan/mining-buddies-mod"
+    "sources": "https://github.com/yaya-nyan/mining-buddies-mod.git",
+    "issues": "https://github.com/yaya-nyan/mining-buddies-mod/issues"
   },
   "license": "MIT",
   "icon": "assets/miningbuddies/icon.png",
