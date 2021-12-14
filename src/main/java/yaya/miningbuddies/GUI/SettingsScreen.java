@@ -17,6 +17,7 @@ import net.minecraft.text.OrderedText;
 import net.minecraft.text.TranslatableText;
 import net.minecraft.util.Identifier;
 import yaya.miningbuddies.GUI.Hud.BuddyUIElement;
+import yaya.miningbuddies.GUI.Widgets.FlowerWidget;
 import yaya.miningbuddies.Registries.BuddyManager;
 import yaya.miningbuddies.Settings.Settings;
 import yaya.miningbuddies.Settings.SettingsManager;
@@ -59,6 +60,9 @@ public class SettingsScreen extends GameOptionsScreen
 			SettingsManager.save();
 			this.client.setScreen(this.previous);
 		}));
+		Random r = new Random();
+		if(r.nextFloat() < 0.01f)
+			this.addDrawableChild(new FlowerWidget(18, 18, 32, 32, (button) -> ((FlowerWidget)button).rotateRandom()));
 	}
 	
 	@Override
