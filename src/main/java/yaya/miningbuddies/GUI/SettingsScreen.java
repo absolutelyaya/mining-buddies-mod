@@ -21,6 +21,7 @@ import yaya.miningbuddies.GUI.Widgets.FlowerWidget;
 import yaya.miningbuddies.Registries.BuddyManager;
 import yaya.miningbuddies.Settings.Settings;
 import yaya.miningbuddies.Settings.SettingsManager;
+import yaya.miningbuddies.client.MiningBuddiesClientMod;
 
 import java.util.List;
 import java.util.Random;
@@ -99,7 +100,7 @@ public class SettingsScreen extends GameOptionsScreen
 		int col = 64;
 		RenderSystem.depthFunc(519);
 		RenderSystem.setShader(GameRenderer::getPositionTexColorShader);
-		RenderSystem.setShaderTexture(0, new Identifier("textures/block/moss_block.png"));
+		RenderSystem.setShaderTexture(0, MiningBuddiesClientMod.MENU_BLOCK);
 		RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
 		bufferBuilder.begin(VertexFormat.DrawMode.QUADS, VertexFormats.POSITION_TEXTURE_COLOR);
 		bufferBuilder.vertex(0.0D, this.height, -100.0D).texture(0.0F, (float)this.height / 32.0F + (float)vOffset).color(col, col, col, 255).next();

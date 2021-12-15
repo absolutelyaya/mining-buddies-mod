@@ -14,5 +14,9 @@
   "setting.miningbuddies.mini-buddy-hud-pos.top_right": "Top Right",
   "setting.miningbuddies.mini-buddy-hud-pos.bottom_left": "Bottom Left",
   "setting.miningbuddies.mini-buddy-hud-pos.bottom_right": "Bottom Right",
-  "setting.miningbuddies.show-new-buddy-popup": "\"New Buddy\"-Popup"
+  "setting.miningbuddies.show-new-buddy-popup": "\"New Buddy\"-Popup",
+  "screen.miningbuddies.buddyselection.title": "Buddy Selection",
+
+  "category.miningbuddies.keybinds": "Mining Buddies",
+  "key.miningbuddies.buddymenu": "Open Buddy Selection Menu"
 }

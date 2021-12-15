@@ -27,7 +27,7 @@ public class BuddyUIElement extends DrawableHelper
 	double pos;
 	double destination;
 	BuddyType buddyType;
-	AnimationState state = AnimationState.IDLE;
+	AnimationState state;
 	Animation activeAnimation;
 	boolean moving;
 	boolean flip;
@@ -61,7 +61,9 @@ public class BuddyUIElement extends DrawableHelper
 			
 			RenderSystem.setShaderColor(1f, 1f, 1f, alpha);
 			Identifier texture = new Identifier(buddyType.getID().getNamespace(), "textures/buddies/" + buddyType.getID().getPath() + ".png");
-			if (textureManager.getTexture(texture) == null)
+			if(textureManager == null)
+				textureManager = MinecraftClient.getInstance().getTextureManager();
+			if (textureManager == null || textureManager.getTexture(texture) == null)
 				RenderSystem.setShaderTexture(0, new Identifier(MiningBuddiesMod.MOD_ID, "textures/buddies/missing.png"));
 			else
 				RenderSystem.setShaderTexture(0, texture);
@@ -88,13 +90,11 @@ public class BuddyUIElement extends DrawableHelper
 			BuddyUIEReachDestinationCallback.EVENT.invoker().interact(this);
 		}
 		
-		if(moving && !state.equals(AnimationState.MOVE))
+		if(moving)
 			setActiveAnimation(AnimationState.MOVE);
-		if(!moving && state.equals(AnimationState.MOVE))
-			setActiveAnimation(AnimationState.IDLE);
-		
-		if(!moving && state.equals(AnimationState.IDLE))
+		if(!moving && state == AnimationState.MOVE)
 		{
+			setActiveAnimation(AnimationState.IDLE);
 			if(moveCooldown > 0)
 				moveCooldown -= deltaTime;
 			else if(moveRandomly)
@@ -125,10 +125,18 @@ public class BuddyUIElement extends DrawableHelper
 	
 	public void setActiveAnimation(AnimationState state)
 	{
-		this.state = state;
-		this.frameTime = 0;
-		if(buddyType != null)
-			this.activeAnimation = buddyType.getAnimation(state.name().toLowerCase());
+		if(this.state != state)
+		{
+			this.state = state;
+			this.frameTime = 0;
+			if(buddyType != null)
+				this.activeAnimation = buddyType.getAnimation(state.name().toLowerCase());
+		}
+	}
+	
+	public AnimationState getState()
+	{
+		return state;
 	}
 	
 	public void setAlpha(float alpha)

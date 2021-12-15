@@ -22,14 +22,17 @@ import yaya.miningbuddies.client.MiningBuddiesClientMod;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 @Mixin(PlayerEntity.class)
 public abstract class PlayerEntityMixin implements PlayerEntityAccessor
 {
 	@Shadow public abstract void sendMessage(Text message, boolean actionBar);
 	
+	@Shadow protected abstract void initDataTracker();
+	
 	@Unique private List<Buddy> ownedBuddies = new ArrayList<>();
-	@Unique private Buddy activeBuddy;
+	@Unique private UUID activeBuddy = new UUID(0, 0);
 	
 	@Inject(method = "writeCustomDataToNbt", at = @At("RETURN"))
 	public void onWriteCustomDataToNbt(NbtCompound nbt, CallbackInfo ci)
@@ -40,7 +43,7 @@ public abstract class PlayerEntityMixin implements PlayerEntityAccessor
 		{
 			buddyList.add(Buddy.serialize(buddy));
 		}
-		data.put("activeBuddy", Buddy.serialize(activeBuddy));
+		data.putUuid("activeBuddy", activeBuddy);
 		data.put("ownedBuddies", buddyList);
 		nbt.put(MiningBuddiesMod.MOD_ID, data);
 	}
@@ -58,22 +61,26 @@ public abstract class PlayerEntityMixin implements PlayerEntityAccessor
 				buddies.add(Buddy.deserialize((NbtCompound)buddy));
 			}
 			setOwnedBuddies(buddies);
-			setActiveBuddy(Buddy.deserialize((NbtCompound)nbt1.get("activeBuddy")));
+			setActiveBuddy(nbt1.getUuid("activeBuddy"));
 		}
 	}
 	
 	@Override
-	public void setActiveBuddy(Buddy b)
+	public void setActiveBuddy(UUID id)
 	{
-		if(b != null)
-			MiningBuddiesClientMod.BUDDY_MINI_HUD.setBuddyType(b.getType());
+		if(id != null)
+		{
+			Buddy b = getOwnedBuddyByID(id);
+			if(b != null)
+				MiningBuddiesClientMod.BUDDY_MINI_HUD.setBuddyType(b.getType());
+		}
 		else
 			MiningBuddiesClientMod.BUDDY_MINI_HUD.setBuddyType(null);
-		activeBuddy = b;
+		activeBuddy = id;
 	}
 	
 	@Override
-	public Buddy getActiveBuddy()
+	public UUID getActiveBuddy()
 	{
 		return activeBuddy;
 	}
@@ -81,32 +88,44 @@ public abstract class PlayerEntityMixin implements PlayerEntityAccessor
 	@Override
 	public List<Buddy> getOwnedBuddies()
 	{
-		return ownedBuddies;
+		return this.ownedBuddies;
 	}
 	
 	@Override
 	public void setOwnedBuddies(List<Buddy> ownedBuddies)
 	{
 		if(ownedBuddies.size() > 0)
+		{
 			this.ownedBuddies = ownedBuddies;
+		}
 		else
 		{
 			this.ownedBuddies = List.of(new Buddy(BuddyManager.getBuddyType(new Identifier(MiningBuddiesMod.MOD_ID, "glare"))));
-			setActiveBuddy(this.ownedBuddies.get(0));
-			System.out.println("applied default buddies");
+			setActiveBuddy(this.ownedBuddies.get(0).getUuid());
 		}
+	}
+	
+	@Override
+	public Buddy getOwnedBuddyByID(UUID id)
+	{
+		for (Buddy b : ownedBuddies)
+		{
+			if(id.equals(b.getUuid()))
+				return b;
+		}
+		return null;
 	}
 	
 	@Override
 	public boolean addBuddy(Buddy b)
 	{
-		if(hasBuddyOfType(b.getType().getID()))
-			return false;
+		//if(hasBuddyOfType(b.getType().getID()))
+		//	return false;
 		ownedBuddies.add(b);
 		if(SettingsStorage.getBoolean("show-new-buddy-popup"))
 			MiningBuddiesClientMod.NEW_BUDDY_POPUP_HUD.onGetNewBuddy(b.getType());
 		else
-			sendMessage(new TranslatableText("buddy.get"), false);
+			sendMessage(new TranslatableText("buddy.get", b.getType().name), true);
 		return true;
 	}
 	
