@@ -71,7 +71,7 @@ public class NewBuddyPopupHud extends DrawableHelper
 						0, -16, ColorUtil.GOLD);
 				matrices.scale(0.66f, 0.66f, 0.66f);
 				drawCenteredTextWithShadow(matrices, client.textRenderer, OrderedText.styledForwardsVisitedString(currentlyShowing.name, Style.EMPTY),
-						0, 54, ColorUtil.DARK_RED);
+						0, 54, ColorUtil.GOLD);
 				matrices.pop();
 				animTime += deltaTime;
 			}

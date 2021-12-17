@@ -123,15 +123,19 @@ public class BuddyUIElement extends DrawableHelper
 		setActiveAnimation(AnimationState.IDLE);
 	}
 	
-	public void setActiveAnimation(AnimationState state)
+	public boolean setActiveAnimation(AnimationState state)
 	{
 		if(this.state != state)
 		{
 			this.state = state;
 			this.frameTime = 0;
 			if(buddyType != null)
+			{
 				this.activeAnimation = buddyType.getAnimation(state.name().toLowerCase());
+				return true;
+			}
 		}
+		return false;
 	}
 	
 	public AnimationState getState()
