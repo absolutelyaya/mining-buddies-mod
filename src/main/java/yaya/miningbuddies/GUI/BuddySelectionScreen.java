@@ -54,8 +54,6 @@ public class BuddySelectionScreen extends Screen
 		drawCenteredText(matrices, this.textRenderer, this.subtitle, this.width / 2, 15, ColorUtil.GRAY);
 	}
 	
-	
-	
 	public void renderBorders()
 	{
 		RenderSystem.setShader(GameRenderer::getPositionTexColorShader);

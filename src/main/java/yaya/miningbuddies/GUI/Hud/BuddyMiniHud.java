@@ -17,7 +17,7 @@ public class BuddyMiniHud extends DrawableHelper
 	
 	public BuddyMiniHud()
 	{
-		buddyUIE = new BuddyUIElement(new Vector2f(-64, 64), true);
+		buddyUIE = new BuddyUIElement(new Vector2f(-16, 16), true);
 	}
 	
 	public void render(MatrixStack matrices, MinecraftClient client, float deltaTime)

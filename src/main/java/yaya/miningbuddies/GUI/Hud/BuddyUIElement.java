@@ -92,9 +92,10 @@ public class BuddyUIElement extends DrawableHelper
 		
 		if(moving)
 			setActiveAnimation(AnimationState.MOVE);
-		if(!moving && state == AnimationState.MOVE)
+		if(!moving)
 		{
-			setActiveAnimation(AnimationState.IDLE);
+			if(state == AnimationState.MOVE)
+				setActiveAnimation(AnimationState.IDLE);
 			if(moveCooldown > 0)
 				moveCooldown -= deltaTime;
 			else if(moveRandomly)
@@ -123,7 +124,7 @@ public class BuddyUIElement extends DrawableHelper
 		setActiveAnimation(AnimationState.IDLE);
 	}
 	
-	public boolean setActiveAnimation(AnimationState state)
+	public void setActiveAnimation(AnimationState state)
 	{
 		if(this.state != state)
 		{
@@ -132,10 +133,8 @@ public class BuddyUIElement extends DrawableHelper
 			if(buddyType != null)
 			{
 				this.activeAnimation = buddyType.getAnimation(state.name().toLowerCase());
-				return true;
 			}
 		}
-		return false;
 	}
 	
 	public AnimationState getState()
