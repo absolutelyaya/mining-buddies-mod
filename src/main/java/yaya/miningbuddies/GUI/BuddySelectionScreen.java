@@ -32,13 +32,13 @@ public class BuddySelectionScreen extends Screen
 	@Override
 	protected void init()
 	{
-		list = new BuddyListWidget(client, 36, 32,  width - 72, height - 32, 5, 5);
+		list = new BuddyListWidget(client, width, height,  32, height - 32);
 		ServerPlayerEntity player = client.getServer().getPlayerManager().getPlayer(client.player.getUuid());
 		list.addAll(((PlayerEntityAccessor)player).getOwnedBuddies());
-		for (var entry : list.getSelectables())
-		{
-			this.addSelectableChild(entry);
-		}
+//		for (var entry : list.children())
+//		{
+//			this.addSelectableChild(entry);
+//		}
 		this.addSelectableChild(list);
 		this.addDrawableChild(new ButtonWidget(this.width / 2 - 100, this.height - 27, 200, 20,
 				ScreenTexts.DONE, (button) -> this.client.setScreen(null)));
@@ -53,6 +53,8 @@ public class BuddySelectionScreen extends Screen
 		drawCenteredText(matrices, this.textRenderer, this.title, this.width / 2, 6, ColorUtil.WHITE);
 		drawCenteredText(matrices, this.textRenderer, this.subtitle, this.width / 2, 15, ColorUtil.GRAY);
 	}
+	
+	
 	
 	public void renderBorders()
 	{
@@ -71,5 +73,12 @@ public class BuddySelectionScreen extends Screen
 		bufferBuilder.vertex(this.width, height - 32, 0).texture((float)this.width / 32.0F, 1).color(col, col, col, 255).next();
 		bufferBuilder.vertex(0, height - 32, 0).texture(0, 1).color(col, col, col, 255).next();
 		tessellator.draw();
+	}
+	
+	@Override
+	public boolean mouseScrolled(double mouseX, double mouseY, double amount)
+	{
+		list.mouseScrolled(mouseX, mouseY, amount);
+		return true;
 	}
 }

@@ -1,14 +1,15 @@
 package yaya.miningbuddies.GUI.Widgets;
 
 import com.mojang.blaze3d.systems.RenderSystem;
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
 import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.gui.DrawableHelper;
 import net.minecraft.client.gui.Element;
 import net.minecraft.client.gui.Selectable;
-import net.minecraft.client.gui.screen.narration.NarrationMessageBuilder;
 import net.minecraft.client.gui.widget.ButtonWidget;
+import net.minecraft.client.gui.widget.ElementListWidget;
 import net.minecraft.client.gui.widget.TextFieldWidget;
-import net.minecraft.client.render.GameRenderer;
+import net.minecraft.client.render.*;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.client.util.math.Vector2f;
 import net.minecraft.text.LiteralText;
@@ -21,101 +22,63 @@ import yaya.miningbuddies.MiningBuddiesMod;
 import yaya.miningbuddies.Utilities.ColorUtil;
 import yaya.miningbuddies.accessors.PlayerEntityAccessor;
 
-import java.util.ArrayList;
 import java.util.List;
 
-public class BuddyListWidget extends DrawableHelper implements Element, Selectable
+@Environment(EnvType.CLIENT)
+public class BuddyListWidget extends ElementListWidget<BuddyListWidget.BuddyListEntry>
 {
-	final MinecraftClient client;
-	final int x, y, width, height, verticalSpacing, horizontalSpacing;
-	
-	List<BuddyListEntry> entries = new ArrayList<>();
-	int nextX, nextY, startX;
-	
-	public BuddyListWidget(MinecraftClient client, int x, int y, int width, int height, int horizontalSpacing, int verticalSpacing)
+	public BuddyListWidget(MinecraftClient client, int width, int height, int top, int bottom)
 	{
-		this.client = client;
-		this.x = x;
-		this.y = y;
-		this.width = width;
-		this.height = height;
-		this.horizontalSpacing = horizontalSpacing;
-		this.verticalSpacing = verticalSpacing;
-		
-		startX = x + (width % (128 + horizontalSpacing)) / 2;
-		nextX = startX;
-		nextY = y + verticalSpacing;
+		super(client, width, height, top, bottom, 49);
+		setRenderBackground(false);
+		setRenderHeader(false, 32);
+		setRenderHorizontalShadows(false);
+		this.centerListVertically = false;
 	}
 	
 	public void addAll(List<Buddy> list)
 	{
 		for (Buddy b : list)
 		{
-			entries.add(new BuddyListEntry(client, nextX, nextY, b));
-			nextX += 128 + horizontalSpacing;
-			if(nextX + 128 - horizontalSpacing > width + (width % (128 + horizontalSpacing)) / 2)
-			{
-				nextY += 44 + verticalSpacing;
-				nextX = startX;
-			}
+			super.addEntry(new BuddyListEntry(client, b));
 		}
 	}
 	
-	public void render(MatrixStack matrices, int mouseX, int mouseY, float delta)
-	{
-		matrices.push();
-		for (BuddyListEntry entry: entries)
-		{
-			entry.render(matrices, mouseX, mouseY, delta / 20);
-		}
-		matrices.pop();
-	}
+	///TODO: show multiple per line
 	
-	@SuppressWarnings("unchecked")
-	public <T extends Element & Selectable> List<T> getSelectables()
+	@Override
+	public boolean mouseScrolled(double mouseX, double mouseY, double amount)
 	{
-		List<T> list = new ArrayList<>();
-		for (BuddyListEntry entry : entries)
-		{
-			list.add((T)entry.selectButton);
-			list.add((T)entry.nicknameField);
-		}
-		return list;
+		super.mouseScrolled(mouseX, mouseY, amount);
+		return true;
 	}
 	
 	@Override
-	public SelectionType getType()
+	public int getRowWidth()
 	{
-		return SelectionType.HOVERED;
+		return 128;
 	}
 	
-	@Override
-	public void appendNarrations(NarrationMessageBuilder builder)
-	{
-		///TODO: narration?
-	}
-	
-	public static class BuddyListEntry implements Element, Selectable
+	public static class BuddyListEntry extends Entry<BuddyListEntry>
 	{
 		BuddyUIElement buddyUIE = new BuddyUIElement(new Vector2f(0, 0), false);
 		Buddy buddy;
 		MinecraftClient client;
 		TextFieldWidget nicknameField;
 		ButtonWidget selectButton;
-		int x, y;
 		
-		public BuddyListEntry(MinecraftClient client, int x, int y, Buddy buddy)
+		int lastY = -1;
+		
+		public BuddyListEntry(MinecraftClient client, Buddy buddy)
 		{
 			this.client = client;
 			this.buddy = buddy;
-			this.x = x;
-			this.y = y;
 			buddyUIE.setBuddyType(buddy.getType());
-			nicknameField = new TextFieldWidget(client.textRenderer, x + 42, y + 6, 61, 15, new LiteralText(buddy.getNickName()));
+			nicknameField = new TextFieldWidget(client.textRenderer, 42, 6, 61, 15, new LiteralText(buddy.getNickName()));
 			nicknameField.setText(buddy.getNickName());
 			nicknameField.setChangedListener(this::renameBuddy);
 			nicknameField.setUneditableColor(ColorUtil.WHITE);
-			selectButton = new ButtonWidget(x + 41, y + 22, 63, 17, new LiteralText(""),
+			selectButton = new ButtonWidget(41, 22, 63, 17, new LiteralText(""),
 					(button ->
 					{
 						if (client.player != null)
@@ -123,8 +86,14 @@ public class BuddyListWidget extends DrawableHelper implements Element, Selectab
 					}));
 		}
 		
-		public void render(MatrixStack matrices, int mouseX, int mouseY, float delta)
+		@Override
+		public void render(MatrixStack matrices, int index, int y, int x, int entryWidth, int entryHeight, int mouseX, int mouseY, boolean hovered, float tickDelta)
 		{
+			float delta = tickDelta / 20;
+			
+			if(lastY != y)
+				repositionSubWidgets(x, y);
+			
 			matrices.push();
 			RenderSystem.setShader(GameRenderer::getPositionTexShader);
 			RenderSystem.setShaderTexture(0, new Identifier(MiningBuddiesMod.MOD_ID, "textures/gui/buddy_selection.png"));
@@ -152,6 +121,14 @@ public class BuddyListWidget extends DrawableHelper implements Element, Selectab
 			matrices.pop();
 		}
 		
+		void repositionSubWidgets(int x, int y)
+		{
+			nicknameField.x = x + 42;
+			nicknameField.y = y + 6;
+			selectButton.x = x + 41;
+			selectButton.y = y + 22;
+		}
+		
 		public void renderButton(MatrixStack matrices, int mouseX, int mouseY, float delta)
 		{
 			matrices.push();
@@ -161,12 +138,12 @@ public class BuddyListWidget extends DrawableHelper implements Element, Selectab
 			matrices.pop();
 			RenderSystem.setShaderTexture(0, new Identifier(MiningBuddiesMod.MOD_ID, "textures/gui/buddy_selection.png"));
 			int i = selectButton.active ? (selectButton.isHovered() ? 2 : 1) : 0;
-			drawTexture(matrices, this.x + 41, this.y + 22, 65, 44 + 17 * i, selectButton.getWidth(), selectButton.getHeight(),
+			drawTexture(matrices, selectButton.x, selectButton.y, 65, 44 + 17 * i, selectButton.getWidth(), selectButton.getHeight(),
 					128, 128);
 			drawCenteredTextWithShadow(matrices, client.textRenderer,
 					new TranslatableText(isActiveBuddy() ? "screen.miningbuddies.buddyselection.selected" :
 												 "screen.miningbuddies.buddyselection.select").asOrderedText(),
-					x + 72, y + 27, ColorUtil.WHITE);
+					selectButton.x + 32, selectButton.y + 4, ColorUtil.WHITE);
 		}
 		
 		boolean isActiveBuddy()
@@ -178,15 +155,9 @@ public class BuddyListWidget extends DrawableHelper implements Element, Selectab
 		}
 		
 		@Override
-		public SelectionType getType()
+		public List<? extends Element> children()
 		{
-			return SelectionType.NONE;
-		}
-		
-		@Override
-		public void appendNarrations(NarrationMessageBuilder builder)
-		{
-			///TODO: narration?
+			return List.of(nicknameField, selectButton);
 		}
 		
 		@Override
@@ -194,12 +165,18 @@ public class BuddyListWidget extends DrawableHelper implements Element, Selectab
 		{
 			if(!nicknameField.isHovered() && nicknameField.isFocused())
 				nicknameField.setTextFieldFocused(false);
-			return Element.super.mouseClicked(mouseX, mouseY, button);
+			return super.mouseClicked(mouseX, mouseY, button);
 		}
 		
 		void renameBuddy(String nick)
 		{
 			buddy.setNickName(nick);
+		}
+		
+		@Override
+		public List<? extends Selectable> selectableChildren()
+		{
+			return List.of(nicknameField, selectButton);
 		}
 	}
 }
