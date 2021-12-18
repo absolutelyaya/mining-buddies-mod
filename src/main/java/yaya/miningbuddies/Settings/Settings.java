@@ -10,6 +10,7 @@ public class Settings
 {
 	public static final EnumSetting<PositionEnum> MINI_BUDDY_HUD_POS = new EnumSetting<>("mini-buddy-hud-pos", PositionEnum.TOP_LEFT);
 	public static final BooleanSetting SHOW_MINI_BUDDY_HUD = new BooleanSetting("show-mini-buddy-hud", true);
+	public static final SliderSetting MINI_BUDDY_HUD_BG_ALPHA = new SliderSetting("mini-buddy-hud-bg-alpha", 1D, 0D, 1D, 1f / 256f);
 	public static final BooleanSetting SHOW_NEW_BUDDY_POPUP = new BooleanSetting("show-new-buddy-popup", true);
 	
 	static final List<AbstractSetting> SETTINGS = new ArrayList<>();
@@ -18,6 +19,7 @@ public class Settings
 	{
 		SETTINGS.add(MINI_BUDDY_HUD_POS);
 		SETTINGS.add(SHOW_MINI_BUDDY_HUD);
+		SETTINGS.add(MINI_BUDDY_HUD_BG_ALPHA);
 		SETTINGS.add(SHOW_NEW_BUDDY_POPUP);
 	}
 	
@@ -39,6 +41,8 @@ public class Settings
 				SettingsStorage.setEnum(as.id, ((EnumSetting<?>)as).getDefaultValue());
 			else if(as instanceof BooleanSetting)
 				SettingsStorage.setBoolean(as.id, ((BooleanSetting)as).getDefaultValue());
+			else if(as instanceof SliderSetting)
+				SettingsStorage.setDouble(as.id, ((SliderSetting)as).getDefaultValue());
 		}
 	}
 	

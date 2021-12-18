@@ -15,6 +15,7 @@
   "setting.miningbuddies.mini-buddy-hud-pos.bottom_left": "Bottom Left",
   "setting.miningbuddies.mini-buddy-hud-pos.bottom_right": "Bottom Right",
   "setting.miningbuddies.show-mini-buddy-hud": "Mini-Buddy HUD",
+  "setting.miningbuddies.mini-buddy-hud-bg-alpha": "Mini-Buddy HUD opacity",
   "setting.miningbuddies.show-new-buddy-popup": "\"New Buddy\"-Popup",
   "screen.miningbuddies.buddyselection.title": "Buddy Selection",
   "screen.miningbuddies.buddyselection.subtitle": "Set your active Mining Buddy to be visible in your mini-buddy HUD",

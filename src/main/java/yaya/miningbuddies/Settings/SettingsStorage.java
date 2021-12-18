@@ -7,6 +7,7 @@ public class SettingsStorage
 {
 	public static final Map<String, Enum<?>> ENUM_SETTINGS = new HashMap<>();
 	public static final Map<String, Boolean> BOOLEAN_SETTINGS = new HashMap<>();
+	public static final Map<String, Double> DOUBLE_SETTINGS = new HashMap<>();
 	
 	public static void setEnum(String id, Enum<?> value)
 	{
@@ -20,6 +21,11 @@ public class SettingsStorage
 		BOOLEAN_SETTINGS.put(id, value);
 	}
 	
+	public static void setDouble(String id, double value)
+	{
+		DOUBLE_SETTINGS.put(id, value);
+	}
+	
 	@SuppressWarnings("unchecked")
 	public static <E extends Enum<E>> E getEnum(String id, Class<E> enumClass)
 	{
@@ -29,6 +35,11 @@ public class SettingsStorage
 	public static boolean getBoolean(String id)
 	{
 		return BOOLEAN_SETTINGS.get(id);
+	}
+	
+	public static double getDouble(String id)
+	{
+		return DOUBLE_SETTINGS.get(id);
 	}
 	
 	public static <E extends Enum<E>> E cycleEnum(String id, Class<E> typeClass) {

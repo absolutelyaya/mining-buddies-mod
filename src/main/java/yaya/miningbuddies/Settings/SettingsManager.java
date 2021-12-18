@@ -40,6 +40,7 @@ public class SettingsManager
 						{
 							case "E" -> SettingsStorage.setEnum(id[0], EnumSetting.deserialize(value, id[0]));
 							case "B" -> SettingsStorage.setBoolean(id[0], Boolean.parseBoolean(value));
+							case "D" -> SettingsStorage.setDouble(id[0], Double.parseDouble(value));
 						}
 					}
 				}

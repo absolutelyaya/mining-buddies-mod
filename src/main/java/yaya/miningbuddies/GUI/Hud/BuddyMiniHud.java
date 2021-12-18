@@ -32,7 +32,8 @@ public class BuddyMiniHud extends DrawableHelper
 			case TOP_RIGHT ->matrices.translate(scaledWidth - 64 - 8, 8, -500);
 			case BOTTOM_RIGHT -> matrices.translate(scaledWidth - 64 - 8, scaledHeight - 64 - 8, -500);
 		}
-		RenderSystem.setShaderColor(1f, 1f, 1f, 1f);
+		RenderSystem.setShaderColor(1f, 1f, 1f, (float)SettingsStorage.getDouble("mini-buddy-hud-bg-alpha"));
+		RenderSystem.enableBlend();
 		RenderSystem.setShaderTexture(0, new Identifier(MiningBuddiesMod.MOD_ID, "textures/backgrounds/bg1.png"));
 		drawTexture(matrices, 0, 0, 0, 0, 64, 64, 64, 64);
 		if (buddyUIE != null)
