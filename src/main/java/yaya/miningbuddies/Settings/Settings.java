@@ -9,6 +9,7 @@ import java.util.List;
 public class Settings
 {
 	public static final EnumSetting<PositionEnum> MINI_BUDDY_HUD_POS = new EnumSetting<>("mini-buddy-hud-pos", PositionEnum.TOP_LEFT);
+	public static final BooleanSetting SHOW_MINI_BUDDY_HUD = new BooleanSetting("show-mini-buddy-hud", true);
 	public static final BooleanSetting SHOW_NEW_BUDDY_POPUP = new BooleanSetting("show-new-buddy-popup", true);
 	
 	static final List<AbstractSetting> SETTINGS = new ArrayList<>();
@@ -16,6 +17,7 @@ public class Settings
 	static
 	{
 		SETTINGS.add(MINI_BUDDY_HUD_POS);
+		SETTINGS.add(SHOW_MINI_BUDDY_HUD);
 		SETTINGS.add(SHOW_NEW_BUDDY_POPUP);
 	}
 	

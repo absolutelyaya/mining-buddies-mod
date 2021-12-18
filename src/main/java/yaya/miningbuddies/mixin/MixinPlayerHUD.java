@@ -10,6 +10,7 @@ import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
+import yaya.miningbuddies.Settings.SettingsStorage;
 import yaya.miningbuddies.client.MiningBuddiesClientMod;
 
 @Mixin(InGameHud.class)
@@ -23,7 +24,8 @@ public class MixinPlayerHUD extends DrawableHelper
 	public void onRender(MatrixStack matrices, float tickDelta, CallbackInfo ci)
 	{
 		float deltaTime = (float)(System.currentTimeMillis() - lastFrameTime) / 1000;
-		MiningBuddiesClientMod.BUDDY_MINI_HUD.render(matrices, client, deltaTime);
+		if(SettingsStorage.getBoolean("show-mini-buddy-hud"))
+			MiningBuddiesClientMod.BUDDY_MINI_HUD.render(matrices, client, deltaTime);
 		MiningBuddiesClientMod.NEW_BUDDY_POPUP_HUD.render(matrices, client, deltaTime);
 		lastFrameTime = System.currentTimeMillis();
 	}
