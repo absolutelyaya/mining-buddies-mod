@@ -25,11 +25,14 @@ import yaya.miningbuddies.accessors.PlayerEntityAccessor;
 import java.util.List;
 
 @Environment(EnvType.CLIENT)
-public class BuddyListWidget extends ElementListWidget<BuddyListWidget.BuddyListEntry>
+public class BuddyListWidget extends ElementListWidget<HorizontalListListEntry<BuddyListWidget.BuddyListEntry>>
 {
-	public BuddyListWidget(MinecraftClient client, int width, int height, int top, int bottom)
+	int itemWidth;
+	
+	public BuddyListWidget(MinecraftClient client, int width, int height, int top, int bottom, int entryHeight, int itemWidth)
 	{
-		super(client, width, height, top, bottom, 49);
+		super(client, width, height, top, bottom, entryHeight);
+		this.itemWidth = itemWidth;
 		setRenderBackground(false);
 		setRenderHeader(false, 32);
 		setRenderHorizontalShadows(false);
@@ -38,13 +41,18 @@ public class BuddyListWidget extends ElementListWidget<BuddyListWidget.BuddyList
 	
 	public void addAll(List<Buddy> list)
 	{
-		for (Buddy b : list)
+		int offsetX = itemWidth / 2 + getRowWidth() % itemWidth / 2;
+		int objectsPerLine = (getRowWidth() - offsetX - 16) / itemWidth - 1;
+		for (int line = 0; line < list.size() / objectsPerLine; line++)
 		{
-			super.addEntry(new BuddyListEntry(client, b));
+			HorizontalListListEntry<BuddyListEntry> hList = new HorizontalListListEntry<>(client, itemWidth, offsetX);
+			for(int i = line * objectsPerLine; i < line * objectsPerLine + objectsPerLine + 1 && i < list.size(); i++)
+			{
+				hList.add(new BuddyListEntry(client, list.get(i)));
+			}
+			super.addEntry(hList);
 		}
 	}
-	
-	///TODO: show multiple per line
 	
 	@Override
 	public boolean mouseScrolled(double mouseX, double mouseY, double amount)
@@ -56,14 +64,20 @@ public class BuddyListWidget extends ElementListWidget<BuddyListWidget.BuddyList
 	@Override
 	public int getRowWidth()
 	{
-		return 128;
+		return width;
+	}
+	
+	@Override
+	protected int getScrollbarPositionX()
+	{
+		return width - 16;
 	}
 	
 	public static class BuddyListEntry extends Entry<BuddyListEntry>
 	{
+		MinecraftClient client;
 		BuddyUIElement buddyUIE = new BuddyUIElement(new Vector2f(0, 0), false);
 		Buddy buddy;
-		MinecraftClient client;
 		TextFieldWidget nicknameField;
 		ButtonWidget selectButton;
 		
@@ -74,7 +88,7 @@ public class BuddyListWidget extends ElementListWidget<BuddyListWidget.BuddyList
 			this.client = client;
 			this.buddy = buddy;
 			buddyUIE.setBuddyType(buddy.getType());
-			nicknameField = new TextFieldWidget(client.textRenderer, 42, 6, 61, 15, new LiteralText(buddy.getNickName()));
+			nicknameField = new TextFieldWidget(client.textRenderer, 42, 6, 61, 15, new LiteralText("a"));
 			nicknameField.setText(buddy.getNickName());
 			nicknameField.setChangedListener(this::renameBuddy);
 			nicknameField.setUneditableColor(ColorUtil.WHITE);
