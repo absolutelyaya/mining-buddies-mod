@@ -2,8 +2,11 @@ package yaya.miningbuddies;
 
 import com.terraformersmc.modmenu.api.ConfigScreenFactory;
 import com.terraformersmc.modmenu.api.ModMenuApi;
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
 import yaya.miningbuddies.GUI.SettingsScreen;
 
+@Environment(EnvType.CLIENT)
 public class ModMenu implements ModMenuApi
 {
 	@Override

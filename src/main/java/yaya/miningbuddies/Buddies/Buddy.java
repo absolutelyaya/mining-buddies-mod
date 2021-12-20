@@ -1,11 +1,14 @@
 package yaya.miningbuddies.Buddies;
 
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.util.Identifier;
 import yaya.miningbuddies.Registries.BuddyManager;
 
 import java.util.UUID;
 
+@Environment(EnvType.CLIENT)
 public class Buddy
 {
 	private final UUID uuid;
@@ -75,7 +78,6 @@ public class Buddy
 		return type;
 	}
 	
-	///TODO: Store spritecheet information (texture size, animation data)
 	///TODO: Finding requirements (Biome, height, temperature, broken blocks, chance, ...)
 	///TODO: Add Cosmetics (like bows you can put on your Buddy)
 }

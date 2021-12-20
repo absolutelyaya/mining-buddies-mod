@@ -1,6 +1,8 @@
 package yaya.miningbuddies.GUI.Widgets;
 
 import com.mojang.blaze3d.systems.RenderSystem;
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
 import net.minecraft.client.gui.widget.ButtonWidget;
 import net.minecraft.client.render.GameRenderer;
 import net.minecraft.client.util.math.MatrixStack;
@@ -11,6 +13,7 @@ import java.util.Random;
 
 import static java.lang.Math.abs;
 
+@Environment(EnvType.CLIENT)
 public class FlowerWidget extends ButtonWidget
 {
 	Random random = new Random();

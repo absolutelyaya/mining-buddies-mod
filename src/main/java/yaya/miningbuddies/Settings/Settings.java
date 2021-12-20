@@ -1,11 +1,14 @@
 package yaya.miningbuddies.Settings;
 
 import com.google.gson.annotations.SerializedName;
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
 import net.minecraft.client.option.Option;
 
 import java.util.ArrayList;
 import java.util.List;
 
+@Environment(EnvType.CLIENT)
 public class Settings
 {
 	public static final EnumSetting<PositionEnum> MINI_BUDDY_HUD_POS = new EnumSetting<>("mini-buddy-hud-pos", PositionEnum.TOP_LEFT);

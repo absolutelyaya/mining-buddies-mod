@@ -1,10 +1,13 @@
 package yaya.miningbuddies.Events;
 
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
 import net.fabricmc.fabric.api.event.Event;
 import net.fabricmc.fabric.api.event.EventFactory;
 import net.minecraft.util.ActionResult;
 import yaya.miningbuddies.GUI.Hud.BuddyUIElement;
 
+@Environment(EnvType.CLIENT)
 public interface BuddyUIEReachDestinationCallback
 {
 	Event<BuddyUIEReachDestinationCallback> EVENT = EventFactory.createArrayBacked(BuddyUIEReachDestinationCallback.class,

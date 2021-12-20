@@ -1,11 +1,14 @@
 package yaya.miningbuddies.Buddies;
 
 import com.google.common.collect.ImmutableMap;
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
 import net.minecraft.client.util.math.Vector2f;
 import net.minecraft.util.Identifier;
 
 import java.util.Map;
 
+@Environment(EnvType.CLIENT)
 public class BuddyType
 {
 	private final Identifier id;

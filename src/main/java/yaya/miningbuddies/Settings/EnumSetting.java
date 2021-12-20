@@ -1,10 +1,13 @@
 package yaya.miningbuddies.Settings;
 
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
 import net.minecraft.client.option.CyclingOption;
 import net.minecraft.client.option.Option;
 import net.minecraft.text.Text;
 import net.minecraft.text.TranslatableText;
 
+@Environment(EnvType.CLIENT)
 public class EnumSetting<E extends Enum<E>> extends AbstractSetting
 {
 	private final E defaultValue;

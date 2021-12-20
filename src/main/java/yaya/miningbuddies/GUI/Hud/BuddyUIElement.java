@@ -1,6 +1,8 @@
 package yaya.miningbuddies.GUI.Hud;
 
 import com.mojang.blaze3d.systems.RenderSystem;
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.DrawableHelper;
 import net.minecraft.client.texture.TextureManager;
@@ -16,6 +18,7 @@ import java.util.Random;
 
 import static java.lang.Math.abs;
 
+@Environment(EnvType.CLIENT)
 public class BuddyUIElement extends DrawableHelper
 {
 	final Vector2f movementBounds;

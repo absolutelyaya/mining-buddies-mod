@@ -43,6 +43,8 @@ public class NewBuddyPopupHud extends DrawableHelper
 		});
 	}
 	
+	///TODO: add fadeout/fadein animations and generally improve animations
+	
 	public void render(MatrixStack matrices, MinecraftClient client, float deltaTime)
 	{
 		float scaledHeight = client.getWindow().getScaledHeight();

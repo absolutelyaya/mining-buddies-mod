@@ -1,6 +1,8 @@
 package yaya.miningbuddies.GUI.Hud;
 
 import com.mojang.blaze3d.systems.RenderSystem;
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.DrawableHelper;
 import net.minecraft.client.util.math.MatrixStack;
@@ -11,6 +13,7 @@ import yaya.miningbuddies.MiningBuddiesMod;
 import yaya.miningbuddies.Settings.Settings;
 import yaya.miningbuddies.Settings.SettingsStorage;
 
+@Environment(EnvType.CLIENT)
 public class BuddyMiniHud extends DrawableHelper
 {
 	BuddyUIElement buddyUIE;

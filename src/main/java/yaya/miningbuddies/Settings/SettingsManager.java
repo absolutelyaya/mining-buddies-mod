@@ -1,10 +1,13 @@
 package yaya.miningbuddies.Settings;
 
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
 import net.fabricmc.loader.api.FabricLoader;
 import yaya.miningbuddies.MiningBuddiesMod;
 
 import java.io.*;
 
+@Environment(EnvType.CLIENT)
 public class SettingsManager
 {
 	private static File file;

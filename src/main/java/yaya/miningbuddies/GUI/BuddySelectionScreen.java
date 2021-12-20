@@ -1,6 +1,8 @@
 package yaya.miningbuddies.GUI;
 
 import com.mojang.blaze3d.systems.RenderSystem;
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.screen.ScreenTexts;
@@ -15,6 +17,7 @@ import yaya.miningbuddies.GUI.Widgets.BuddyListWidget;
 import yaya.miningbuddies.Utilities.ColorUtil;
 import yaya.miningbuddies.accessors.PlayerEntityAccessor;
 
+@Environment(EnvType.CLIENT)
 public class BuddySelectionScreen extends Screen
 {
 	final Text subtitle;

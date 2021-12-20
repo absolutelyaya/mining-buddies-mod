@@ -6,7 +6,6 @@ import yaya.miningbuddies.Commands.GiveBuddyCommand;
 import yaya.miningbuddies.Registries.BuddyManager;
 import yaya.miningbuddies.Settings.SettingsManager;
 
-
 public class MiningBuddiesMod implements ModInitializer
 {
 	public static String MOD_ID = "miningbuddies";

@@ -1,5 +1,7 @@
 package yaya.miningbuddies.mixin;
 
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.DrawableHelper;
 import net.minecraft.client.gui.hud.InGameHud;
@@ -14,6 +16,7 @@ import yaya.miningbuddies.Settings.SettingsStorage;
 import yaya.miningbuddies.client.MiningBuddiesClientMod;
 
 @Mixin(InGameHud.class)
+@Environment(EnvType.CLIENT)
 public class MixinPlayerHUD extends DrawableHelper
 {
 	@Shadow @Final private MinecraftClient client;

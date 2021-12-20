@@ -1,5 +1,7 @@
 package yaya.miningbuddies.GUI.Widgets;
 
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.Element;
 import net.minecraft.client.gui.Selectable;
@@ -10,6 +12,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 //Name sounds weird, but this List Entry is a Horizontal List so-
+@Environment(EnvType.CLIENT)
 public class HorizontalListListEntry<T extends ElementListWidget.Entry<T>> extends ElementListWidget.Entry<HorizontalListListEntry<T>>
 {
 	MinecraftClient client;

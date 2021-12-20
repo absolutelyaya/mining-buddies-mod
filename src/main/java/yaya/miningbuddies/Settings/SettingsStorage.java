@@ -1,8 +1,12 @@
 package yaya.miningbuddies.Settings;
 
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
+
 import java.util.HashMap;
 import java.util.Map;
 
+@Environment(EnvType.CLIENT)
 public class SettingsStorage
 {
 	public static final Map<String, Enum<?>> ENUM_SETTINGS = new HashMap<>();

@@ -1,10 +1,13 @@
 package yaya.miningbuddies.Settings;
 
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
 import net.minecraft.client.option.DoubleOption;
 import net.minecraft.client.option.Option;
 import net.minecraft.text.Text;
 import net.minecraft.text.TranslatableText;
 
+@Environment(EnvType.CLIENT)
 public class SliderSetting extends AbstractSetting
 {
 	public final double defaultValue, min, max;
