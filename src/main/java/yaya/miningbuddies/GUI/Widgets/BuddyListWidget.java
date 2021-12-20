@@ -76,7 +76,7 @@ public class BuddyListWidget extends ElementListWidget<HorizontalListListEntry<B
 	public static class BuddyListEntry extends Entry<BuddyListEntry>
 	{
 		MinecraftClient client;
-		BuddyUIElement buddyUIE = new BuddyUIElement(new Vector2f(0, 0), false);
+		BuddyUIElement buddyUIE = new BuddyUIElement(new Vector2f(0, 0), false, false);
 		Buddy buddy;
 		TextFieldWidget nicknameField;
 		ButtonWidget selectButton;

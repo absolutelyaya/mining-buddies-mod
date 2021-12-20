@@ -22,26 +22,24 @@ public class BuddyUIElement extends DrawableHelper
 	final Random random;
 	final boolean moveRandomly;
 	
-	float frameTime;
+	boolean moving, flip, pause;
 	int frame;
-	double pos;
-	double destination;
+	double pos, destination;
+	double speedMultiplier = 1;
+	float frameTime, moveCooldown;
+	float alpha = 1f;
 	BuddyType buddyType;
 	AnimationState state;
 	Animation activeAnimation;
-	boolean moving;
-	boolean flip;
-	float moveCooldown;
-	float alpha = 1f;
-	double speedMultiplier = 1;
 	TextureManager textureManager;
 	
-	public BuddyUIElement(Vector2f movementBounds, boolean moveRandomly)
+	public BuddyUIElement(Vector2f movementBounds, boolean moveRandomly, boolean pause)
 	{
 		this.movementBounds = movementBounds;
 		this.moveRandomly = moveRandomly;
 		random = new Random();
 		textureManager = MinecraftClient.getInstance().getTextureManager();
+		this.pause = pause;
 	}
 	
 	public void render(MatrixStack matrices, float deltaTime)
@@ -49,14 +47,17 @@ public class BuddyUIElement extends DrawableHelper
 		matrices.translate(pos, 0, 0);
 		if(buddyType != null)
 		{
-			update(deltaTime);
-			frameTime += deltaTime;
-			if(activeAnimation != null && frameTime > activeAnimation.interval())
+			if(!(pause && MinecraftClient.getInstance().isPaused()))
 			{
-				frame++;
-				frameTime = 0;
-				if(frame > activeAnimation.frames() - 1)
-					frame = 0;
+				update(deltaTime);
+				frameTime += deltaTime;
+				if(activeAnimation != null && frameTime > activeAnimation.interval())
+				{
+					frame++;
+					frameTime = 0;
+					if(frame > activeAnimation.frames() - 1)
+						frame = 0;
+				}
 			}
 			
 			RenderSystem.setShaderColor(1f, 1f, 1f, alpha);

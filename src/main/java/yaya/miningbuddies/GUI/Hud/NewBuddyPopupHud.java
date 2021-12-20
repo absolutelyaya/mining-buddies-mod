@@ -29,7 +29,7 @@ public class NewBuddyPopupHud extends DrawableHelper
 	
 	public NewBuddyPopupHud()
 	{
-		buddyUIE = new BuddyUIElement(new Vector2f(Float.NEGATIVE_INFINITY, Float.POSITIVE_INFINITY), false);
+		buddyUIE = new BuddyUIElement(new Vector2f(Float.NEGATIVE_INFINITY, Float.POSITIVE_INFINITY), false, true);
 		buddyUIE.setSpeedMultiplier(3);
 		BuddyUIEReachDestinationCallback.EVENT.register((b) ->
 		{
@@ -58,7 +58,7 @@ public class NewBuddyPopupHud extends DrawableHelper
 		}
 		if(currentlyShowing != null)
 		{
-			if(animTime >= 0)
+			if(animTime >= 0 && !client.isPaused())
 			{
 				matrices.push();
 				matrices.translate(scaledWidth / 2, scaledHeight / 6, 99);

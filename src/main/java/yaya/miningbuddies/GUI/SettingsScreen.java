@@ -39,7 +39,7 @@ public class SettingsScreen extends GameOptionsScreen
 		super(parent, MinecraftClient.getInstance().options, new TranslatableText("screen.miningbuddies.options.title"));
 		previous = parent;
 		List<Identifier> types = BuddyManager.getBuddyTypes();
-		buddyUIE = new BuddyUIElement(new Vector2f(0, 0), false);
+		buddyUIE = new BuddyUIElement(new Vector2f(0, 0), false, false);
 		if(types.size() > 0)
 		{
 			Random r = new Random();
