@@ -51,6 +51,4 @@ public class BuddyMiniHud extends DrawableHelper
 	{
 		buddyUIE.setBuddyType(buddyType);
 	}
-	
-	///TODO: make buddies react to stuff (like finding diamonds)
 }

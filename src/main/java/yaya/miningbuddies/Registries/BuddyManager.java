@@ -2,16 +2,20 @@ package yaya.miningbuddies.Registries;
 
 import com.google.common.collect.ImmutableMap;
 import com.google.gson.*;
+import com.mojang.brigadier.StringReader;
 import net.minecraft.client.util.math.Vector2f;
+import net.minecraft.command.argument.ItemStringReader;
 import net.minecraft.resource.JsonDataLoader;
 import net.minecraft.resource.ResourceManager;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.JsonHelper;
 import net.minecraft.util.profiler.Profiler;
+import net.minecraft.util.registry.Registry;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import yaya.miningbuddies.Buddies.Animation;
 import yaya.miningbuddies.Buddies.BuddyType;
+import yaya.miningbuddies.Buddies.Reaction;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -23,7 +27,6 @@ public class BuddyManager extends JsonDataLoader
 	private static final Logger LOGGER = LogManager.getLogger();
 	private static final Gson GSON = (new GsonBuilder()).setPrettyPrinting().disableHtmlEscaping().create();
 	private static Map<Identifier, BuddyType> buddies = ImmutableMap.of();
-	private boolean errored;
 	
 	public BuddyManager()
 	{
@@ -33,7 +36,6 @@ public class BuddyManager extends JsonDataLoader
 	@Override
 	protected void apply(Map<Identifier, JsonElement> prepared, ResourceManager manager, Profiler profiler)
 	{
-		this.errored = false;
 		ImmutableMap.Builder<Identifier, BuddyType> builder = ImmutableMap.builder();
 		
 		for (Map.Entry<Identifier, JsonElement> identifierJsonElementEntry : prepared.entrySet())
@@ -52,10 +54,6 @@ public class BuddyManager extends JsonDataLoader
 		}
 		buddies = builder.build();
 		LOGGER.info("Loaded {} Buddies!", buddies.size());
-	}
-	
-	public boolean isErrored() {
-		return this.errored;
 	}
 	
 	public static BuddyType getBuddyType(Identifier id)
@@ -89,6 +87,98 @@ public class BuddyManager extends JsonDataLoader
 			animations.put(animId, new Animation(i, frames, interval, loops));
 		}
 		double moveSpeed = JsonHelper.getDouble(json, "moveSpeed");
-		return new BuddyType(name, identifier, totalSize, buddySize, animations, moveSpeed);
+		JsonArray reactionArray = JsonHelper.getArray(json, "animations");
+		Map<Reaction.ReactionTrigger, List<Reaction>> reactions = new HashMap<>();
+		for (int i = 0; i < reactionArray.size(); i++)
+		{
+			JsonObject reactionObject = animationArray.get(i).getAsJsonObject();
+			Reaction.ReactionTrigger type = Reaction.ReactionTrigger.valueOf(JsonHelper.getString(reactionObject, "type"));
+			if(!reactions.containsKey(type))
+				reactions.put(type, new ArrayList<>());
+			Reaction r = deserializeReaction(reactionObject, type, identifier);
+			if(r != null)
+				reactions.get(type).add(r);
+		}
+		return new BuddyType(name, identifier, totalSize, buddySize, animations, moveSpeed, reactions);
+	}
+	
+	static Reaction deserializeReaction(JsonObject object, Reaction.ReactionTrigger type, Identifier id)
+	{
+		String anim = JsonHelper.getString(object, "animation");
+		Reaction reaction = new Reaction(type, anim);
+		switch(type)
+		{
+			case PICKUP -> {
+				String item = JsonHelper.getString(object, "item");
+				if(new ItemStringReader(new StringReader(item), false).getItem() == null)
+				{
+					reactionError(type, id, "\t- Item '" + item + "' invalid.");
+					return null;
+				}
+				reaction.setData(item);
+			}
+			case LIGHTLEVEL -> setIntValue(reaction, object);
+			case NEARBY -> {
+				JsonObject data = JsonHelper.getObject(object, "data");
+				if(JsonHelper.hasNumber(data, "distance") && JsonHelper.hasString(data, "entity"))
+				{
+					reaction.setMax(JsonHelper.getInt(data, "distance"));
+					String entity = JsonHelper.getString(data, "entity");
+					Identifier entityID = Identifier.tryParse(entity);
+					if(entityID != null)
+					{
+						var e = Registry.ENTITY_TYPE.getOrEmpty(id);
+						if(e.isPresent())
+							reaction.setData(entity);
+						else
+						{
+							reactionError(type, id,"Entity Type '" + entity + "' not found.");
+							return null;
+						}
+					}
+					else
+					{
+						reactionError(type, id, "Entity Type '" + entity + "' couldn't be parsed to an Identifier.");
+						return null;
+					}
+				}
+				else
+				{
+					List<String> missing = new ArrayList<>();
+					if(!JsonHelper.hasNumber(data, "distance"))
+						missing.add("Missing Argument 'distance'.");
+					if(!JsonHelper.hasString(data, "entity"))
+						missing.add("Missing Argument 'entity'.");
+					reactionError(type, id, missing.toArray(String[]::new));
+					return null;
+				}
+			}
+		}
+		return reaction;
+	}
+	
+	static void reactionError(Reaction.ReactionTrigger type, Identifier id, String... reasons)
+	{
+		StringBuilder error = new StringBuilder("Failed to load Reaction of type " + type.name() + " in Buddy '" + id.toString() + "'.");
+		for (String r : reasons)
+		{
+			error.append("\n\t- ").append(r);
+		}
+		System.err.println(error);
+	}
+	
+	static void setIntValue(Reaction reaction, JsonObject object)
+	{
+		if(JsonHelper.hasNumber(object, "value"))
+		{
+			int value = JsonHelper.getInt(object, "value");
+			reaction.setMin(value);
+			reaction.setMax(value);
+			return;
+		}
+		if(JsonHelper.hasNumber(object, "min"))
+			reaction.setMin(JsonHelper.getInt(object, "min"));
+		if(JsonHelper.hasNumber(object, "max"))
+			reaction.setMax(JsonHelper.getInt(object, "max"));
 	}
 }

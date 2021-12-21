@@ -16,7 +16,8 @@
     {
       "id": "cheer",
       "frames": 1,
-      "interval": 0.1
+      "interval": 1,
+      "loops": 1
     },
     {
       "id": "move",
@@ -24,5 +25,28 @@
       "interval": 0.1
     }
   ],
-  "moveSpeed": 8
+  "moveSpeed": 8,
+  "reactions":
+  [
+    {
+      "type": "pickup",
+      "weight": 1,
+      "item": "minecraft:diamond",
+      "animation": "cheer"
+    },
+    {
+      "type": "lightlevel",
+      "value": 0,
+      "animation": "grumpy"
+    },
+    {
+      "type": "nearby",
+      "data":
+      {
+        "distance": 8,
+        "entity": "minecraft:zombie"
+      },
+      "animation": "panic"
+    }
+  ]
 }

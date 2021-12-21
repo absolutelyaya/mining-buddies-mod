@@ -146,6 +146,8 @@ public class BuddyUIElement extends DrawableHelper
 		}
 	}
 	
+	///TODO: Trigger reactions
+	
 	public void setAlpha(float alpha)
 	{
 		this.alpha = alpha;

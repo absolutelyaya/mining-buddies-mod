@@ -6,6 +6,7 @@ import net.fabricmc.api.Environment;
 import net.minecraft.client.util.math.Vector2f;
 import net.minecraft.util.Identifier;
 
+import java.util.List;
 import java.util.Map;
 
 @Environment(EnvType.CLIENT)
@@ -15,9 +16,10 @@ public class BuddyType
 	public final String name;
 	private final Vector2f textureSize, buddySize;
 	private final Map<String, Animation> animations;
+	private final Map<Reaction.ReactionTrigger, List<Reaction>> reactions;
 	private final double moveSpeed;
 	
-	public BuddyType(String name, Identifier identifier, Vector2f textureSize, Vector2f buddySize, Map<String, Animation> animations, double movementSpeed)
+	public BuddyType(String name, Identifier identifier, Vector2f textureSize, Vector2f buddySize, Map<String, Animation> animations, double movementSpeed, Map<Reaction.ReactionTrigger, List<Reaction>> reactions)
 	{
 		this.name = name;
 		this.id = identifier;
@@ -25,6 +27,7 @@ public class BuddyType
 		this.textureSize = textureSize;
 		this.animations = ImmutableMap.copyOf(animations);
 		this.moveSpeed = movementSpeed;
+		this.reactions = reactions;
 	}
 	
 	public Identifier getID()
@@ -50,5 +53,10 @@ public class BuddyType
 	public double getMoveSpeed()
 	{
 		return moveSpeed;
+	}
+	
+	public Map<Reaction.ReactionTrigger, List<Reaction>> getReactions()
+	{
+		return reactions;
 	}
 }
