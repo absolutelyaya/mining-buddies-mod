@@ -26,7 +26,7 @@ public class BuddyUIElement extends DrawableHelper
 	final boolean moveRandomly;
 	
 	boolean moving, flip, pause;
-	int frame;
+	int frame, animLoops;
 	double pos, destination;
 	double speedMultiplier = 1;
 	float frameTime, moveCooldown;
@@ -59,7 +59,12 @@ public class BuddyUIElement extends DrawableHelper
 					frame++;
 					frameTime = 0;
 					if(frame > activeAnimation.frames() - 1)
+					{
 						frame = 0;
+						animLoops++;
+						if(activeAnimation.loops() != 0 && animLoops > activeAnimation.loops())
+							setActiveAnimation(AnimationState.IDLE);
+					}
 				}
 			}
 			
@@ -139,11 +144,6 @@ public class BuddyUIElement extends DrawableHelper
 				this.activeAnimation = buddyType.getAnimation(state.name().toLowerCase());
 			}
 		}
-	}
-	
-	public AnimationState getState()
-	{
-		return state;
 	}
 	
 	public void setAlpha(float alpha)

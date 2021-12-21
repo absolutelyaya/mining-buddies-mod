@@ -13,8 +13,7 @@ public class BuddyType
 {
 	private final Identifier id;
 	public final String name;
-	private final Vector2f textureSize;
-	private final Vector2f buddySize;
+	private final Vector2f textureSize, buddySize;
 	private final Map<String, Animation> animations;
 	private final double moveSpeed;
 	
