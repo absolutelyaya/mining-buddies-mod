@@ -42,11 +42,11 @@ public class BuddyListWidget extends ElementListWidget<HorizontalListListEntry<B
 	public void addAll(List<Buddy> list)
 	{
 		int offsetX = itemWidth / 2 + getRowWidth() % itemWidth / 2;
-		int objectsPerLine = (getRowWidth() - offsetX - 16) / itemWidth - 1;
-		for (int line = 0; line < list.size() / objectsPerLine; line++)
+		int objectsPerLine = (getRowWidth() - offsetX - 16) / itemWidth;
+		for (int line = 0; line < Math.ceil(((double)list.size() / objectsPerLine)); line++)
 		{
 			HorizontalListListEntry<BuddyListEntry> hList = new HorizontalListListEntry<>(client, itemWidth, offsetX);
-			for(int i = line * objectsPerLine; i < line * objectsPerLine + objectsPerLine + 1 && i < list.size(); i++)
+			for(int i = line * objectsPerLine; i < line * objectsPerLine + objectsPerLine && i < list.size(); i++)
 			{
 				hList.add(new BuddyListEntry(client, list.get(i)));
 			}
@@ -70,7 +70,7 @@ public class BuddyListWidget extends ElementListWidget<HorizontalListListEntry<B
 	@Override
 	protected int getScrollbarPositionX()
 	{
-		return width - 16;
+		return width - 48;
 	}
 	
 	public static class BuddyListEntry extends Entry<BuddyListEntry>
