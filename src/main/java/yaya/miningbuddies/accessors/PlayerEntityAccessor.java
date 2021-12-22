@@ -1,5 +1,6 @@
 package yaya.miningbuddies.accessors;
 
+import net.minecraft.util.Identifier;
 import yaya.miningbuddies.Buddies.Buddy;
 
 import java.util.List;
@@ -18,4 +19,8 @@ public interface PlayerEntityAccessor
 	void setOwnedBuddies(List<Buddy> values);
 	
 	boolean addBuddy(Buddy b);
+	
+	boolean hasBuddyOfType(Identifier type);
+	
+	void buddyReactionTick();
 }

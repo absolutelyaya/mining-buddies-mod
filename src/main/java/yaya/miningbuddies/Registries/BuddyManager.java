@@ -87,17 +87,22 @@ public class BuddyManager extends JsonDataLoader
 			animations.put(animId, new Animation(i, frames, interval, loops));
 		}
 		double moveSpeed = JsonHelper.getDouble(json, "moveSpeed");
-		JsonArray reactionArray = JsonHelper.getArray(json, "animations");
+		JsonArray reactionArray = JsonHelper.getArray(json, "reactions");
 		Map<Reaction.ReactionTrigger, List<Reaction>> reactions = new HashMap<>();
 		for (int i = 0; i < reactionArray.size(); i++)
 		{
-			JsonObject reactionObject = animationArray.get(i).getAsJsonObject();
-			Reaction.ReactionTrigger type = Reaction.ReactionTrigger.valueOf(JsonHelper.getString(reactionObject, "type"));
-			if(!reactions.containsKey(type))
-				reactions.put(type, new ArrayList<>());
-			Reaction r = deserializeReaction(reactionObject, type, identifier);
-			if(r != null)
-				reactions.get(type).add(r);
+			JsonObject reactionObject = reactionArray.get(i).getAsJsonObject();
+			if(JsonHelper.hasString(reactionObject, "type"))
+			{
+				Reaction.ReactionTrigger type = Reaction.ReactionTrigger.valueOf(JsonHelper.getString(reactionObject, "type").toUpperCase());
+				if(!reactions.containsKey(type))
+					reactions.put(type, new ArrayList<>());
+				Reaction r = deserializeReaction(reactionObject, type, identifier);
+				if(r != null)
+					reactions.get(type).add(r);
+			}
+			else
+				System.err.println("Failed loading Reaction " + (i + 1) + " for " + identifier.toString() + " due to missing argument 'type'.");
 		}
 		return new BuddyType(name, identifier, totalSize, buddySize, animations, moveSpeed, reactions);
 	}
@@ -106,13 +111,15 @@ public class BuddyManager extends JsonDataLoader
 	{
 		String anim = JsonHelper.getString(object, "animation");
 		Reaction reaction = new Reaction(type, anim);
+		if(JsonHelper.hasNumber(object, "weight"))
+			reaction.setWeight(JsonHelper.getInt(object, "weight"));
 		switch(type)
 		{
 			case PICKUP -> {
 				String item = JsonHelper.getString(object, "item");
 				if(new ItemStringReader(new StringReader(item), false).getItem() == null)
 				{
-					reactionError(type, id, "\t- Item '" + item + "' invalid.");
+					reactionError(type, id, "Item '" + item + "' invalid.");
 					return null;
 				}
 				reaction.setData(item);

@@ -11,6 +11,7 @@ import net.minecraft.client.util.math.Vector2f;
 import net.minecraft.util.Identifier;
 import yaya.miningbuddies.Buddies.Animation;
 import yaya.miningbuddies.Buddies.BuddyType;
+import yaya.miningbuddies.Buddies.Reaction;
 import yaya.miningbuddies.Events.BuddyUIEReachDestinationCallback;
 import yaya.miningbuddies.MiningBuddiesMod;
 
@@ -29,12 +30,14 @@ public class BuddyUIElement extends DrawableHelper
 	int frame, animLoops;
 	double pos, destination;
 	double speedMultiplier = 1;
-	float frameTime, moveCooldown;
+	float frameTime, moveCooldown, reactionTime;
 	float alpha = 1f;
 	BuddyType buddyType;
 	AnimationState state;
+	AnimationState beforeLastMove = AnimationState.IDLE;
 	Animation activeAnimation;
 	TextureManager textureManager;
+	Reaction activeReaction;
 	
 	public BuddyUIElement(Vector2f movementBounds, boolean moveRandomly, boolean pause)
 	{
@@ -52,12 +55,15 @@ public class BuddyUIElement extends DrawableHelper
 		{
 			if(!(pause && MinecraftClient.getInstance().isPaused()))
 			{
-				update(deltaTime);
 				frameTime += deltaTime;
+				update(deltaTime);
 				if(activeAnimation != null && frameTime > activeAnimation.interval())
 				{
-					frame++;
-					frameTime = 0;
+					frameTime = 0f;
+					if(activeAnimation.frames() > 1)
+					{
+						frame++;
+					}
 					if(frame > activeAnimation.frames() - 1)
 					{
 						frame = 0;
@@ -78,15 +84,16 @@ public class BuddyUIElement extends DrawableHelper
 				RenderSystem.setShaderTexture(0, texture);
 			Vector2f textureSize = buddyType.getTextureSize();
 			Vector2f buddySize = buddyType.getBuddySize();
-			drawTexture(matrices, 0, 0, frame * buddySize.getX(), activeAnimation.index() * buddySize.getY(),
-					32, 32, (int)textureSize.getX() * (flip ? -1 : 1), (int)textureSize.getY());
+			drawTexture(matrices, 0, 0, frame * buddySize.getX() + (flip ? textureSize.getX() - buddySize.getX() : 0),
+					activeAnimation.index() * buddySize.getY(), 32, 32,
+					(int)textureSize.getX() * (flip ? -1 : 1), (int)textureSize.getY());
 		}
 	}
 	
 	void update(float deltaTime)
 	{
 		double moveSpeed = buddyType.getMoveSpeed();
-		if(abs(destination - pos) > moveSpeed * speedMultiplier * deltaTime)
+		if(abs(destination - pos) > moveSpeed * speedMultiplier * deltaTime && state.canMove)
 		{
 			flip = pos < destination;
 			pos = pos + (flip ? 1 : -1) * moveSpeed * speedMultiplier * deltaTime;
@@ -95,22 +102,34 @@ public class BuddyUIElement extends DrawableHelper
 		else if(moving && state.equals(AnimationState.MOVE))
 		{
 			moving = false;
-			moveCooldown = random.nextFloat() * 6;
+			moveCooldown = random.nextFloat() * 9f + 1f;
 			BuddyUIEReachDestinationCallback.EVENT.invoker().interact(this);
 		}
 		
 		if(moving)
 			setActiveAnimation(AnimationState.MOVE);
-		if(!moving)
+		if(!moving && state.canMove)
 		{
 			if(state == AnimationState.MOVE)
-				setActiveAnimation(AnimationState.IDLE);
+				setActiveAnimation(beforeLastMove);
 			if(moveCooldown > 0)
 				moveCooldown -= deltaTime;
 			else if(moveRandomly)
 			{
 				destination = random.nextFloat() * movementBounds.getY() * 2 + movementBounds.getX();
 			}
+		}
+		
+		if(activeReaction != null)
+		{
+			//If reaction animation loops infinitely, check if the reaction hasn't been updated in longer than a second.
+			//If true, stop the reaction and go back to idling.
+			if(activeAnimation.loops() == 0 && activeReaction.animation.equalsIgnoreCase(state.name()) && reactionTime > 1f)
+			{
+				activeReaction = null;
+				setActiveAnimation(AnimationState.IDLE);
+			}
+			reactionTime += deltaTime;
 		}
 	}
 	
@@ -126,27 +145,44 @@ public class BuddyUIElement extends DrawableHelper
 	
 	public void setBuddyType(BuddyType buddyType)
 	{
-		this.frameTime = 0;
 		this.buddyType = buddyType;
+		this.frameTime = 0;
+		this.frame = 0;
 		this.pos = 0;
 		this.destination = 0;
+		this.animLoops = 0;
 		setActiveAnimation(AnimationState.IDLE);
 	}
 	
 	public void setActiveAnimation(AnimationState state)
 	{
-		if(this.state != state)
+		if(this.state != state && buddyType != null)
 		{
+			this.activeAnimation = buddyType.getAnimation(state.name().toLowerCase());
+			if(state == AnimationState.MOVE)
+				beforeLastMove = this.state;
 			this.state = state;
 			this.frameTime = 0;
-			if(buddyType != null)
-			{
-				this.activeAnimation = buddyType.getAnimation(state.name().toLowerCase());
-			}
+			this.frame = 0;
+			this.animLoops = 0;
 		}
 	}
 	
-	///TODO: Trigger reactions
+	public void updateReaction(Reaction.ReactionTrigger type, String data, int value)
+	{
+		if(buddyType != null)
+		{
+			for (Reaction r : buddyType.getReactions().get(type))
+			{
+				if(r.isAppropriate(data, value) && (activeReaction == null || activeReaction.getWeight() <= r.getWeight()))
+				{
+					activeReaction = r;
+					setActiveAnimation(AnimationState.valueOf(r.animation.toUpperCase()));
+					reactionTime = 0;
+				}
+			}
+		}
+	}
 	
 	public void setAlpha(float alpha)
 	{
@@ -158,10 +194,20 @@ public class BuddyUIElement extends DrawableHelper
 		this.speedMultiplier = speedMultiplier;
 	}
 	
+	@SuppressWarnings("unused")
 	public enum AnimationState
 	{
-		IDLE,
-		CHEER,
-		MOVE
+		IDLE(true),
+		CHEER(false),
+		MOVE(true),
+		PANIC(true),
+		GRUMPY(false);
+		
+		final boolean canMove;
+		
+		AnimationState(boolean canMove)
+		{
+			this.canMove = canMove;
+		}
 	}
 }

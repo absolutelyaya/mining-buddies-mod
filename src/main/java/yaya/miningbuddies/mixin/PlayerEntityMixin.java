@@ -1,5 +1,7 @@
 package yaya.miningbuddies.mixin;
 
+import net.minecraft.entity.EntityType;
+import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.nbt.NbtElement;
@@ -7,6 +9,7 @@ import net.minecraft.nbt.NbtList;
 import net.minecraft.text.Text;
 import net.minecraft.text.TranslatableText;
 import net.minecraft.util.Identifier;
+import net.minecraft.world.World;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.Unique;
@@ -14,6 +17,7 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import yaya.miningbuddies.Buddies.Buddy;
+import yaya.miningbuddies.Buddies.Reaction;
 import yaya.miningbuddies.MiningBuddiesMod;
 import yaya.miningbuddies.Registries.BuddyManager;
 import yaya.miningbuddies.Settings.SettingsStorage;
@@ -25,14 +29,17 @@ import java.util.List;
 import java.util.UUID;
 
 @Mixin(PlayerEntity.class)
-public abstract class PlayerEntityMixin implements PlayerEntityAccessor
+public abstract class PlayerEntityMixin extends LivingEntity implements PlayerEntityAccessor
 {
 	@Shadow public abstract void sendMessage(Text message, boolean actionBar);
 	
-	@Shadow protected abstract void initDataTracker();
-	
 	@Unique private List<Buddy> ownedBuddies = new ArrayList<>();
 	@Unique private UUID activeBuddy = new UUID(0, 0);
+	
+	protected PlayerEntityMixin(EntityType<? extends LivingEntity> entityType, World world)
+	{
+		super(entityType, world);
+	}
 	
 	@Inject(method = "writeCustomDataToNbt", at = @At("RETURN"))
 	public void onWriteCustomDataToNbt(NbtCompound nbt, CallbackInfo ci)
@@ -63,6 +70,13 @@ public abstract class PlayerEntityMixin implements PlayerEntityAccessor
 			setOwnedBuddies(buddies);
 			setActiveBuddy(nbt1.getUuid("activeBuddy"));
 		}
+	}
+	
+	@Inject(method = "tick", at = @At("RETURN"))
+	public void onTick(CallbackInfo ci)
+	{
+		if(world.getTime() % 20 == 0)
+			buddyReactionTick();
 	}
 	
 	@Override
@@ -129,6 +143,7 @@ public abstract class PlayerEntityMixin implements PlayerEntityAccessor
 		return true;
 	}
 	
+	@Override
 	public boolean hasBuddyOfType(Identifier type)
 	{
 		for(Buddy b : ownedBuddies)
@@ -137,5 +152,11 @@ public abstract class PlayerEntityMixin implements PlayerEntityAccessor
 				return true;
 		}
 		return false;
+	}
+	
+	@Override
+	public void buddyReactionTick()
+	{
+		MiningBuddiesClientMod.BUDDY_MINI_HUD.updateReaction(Reaction.ReactionTrigger.LIGHTLEVEL, "", world.getLightLevel(getBlockPos()));
 	}
 }

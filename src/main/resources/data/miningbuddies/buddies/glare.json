@@ -2,7 +2,7 @@
   "name": "Glare",
   "textureSize": {
     "totalX": 192,
-    "totalY": 96,
+    "totalY": 128,
     "buddyX": 32,
     "buddyY": 32
   },
@@ -21,6 +21,11 @@
     },
     {
       "id": "move",
+      "frames": 6,
+      "interval": 0.1
+    },
+    {
+      "id": "grumpy",
       "frames": 6,
       "interval": 0.1
     }

@@ -9,6 +9,7 @@ import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.client.util.math.Vector2f;
 import net.minecraft.util.Identifier;
 import yaya.miningbuddies.Buddies.BuddyType;
+import yaya.miningbuddies.Buddies.Reaction;
 import yaya.miningbuddies.MiningBuddiesMod;
 import yaya.miningbuddies.Settings.Settings;
 import yaya.miningbuddies.Settings.SettingsStorage;
@@ -45,6 +46,11 @@ public class BuddyMiniHud extends DrawableHelper
 			buddyUIE.render(matrices, deltaTime);
 		}
 		matrices.pop();
+	}
+	
+	public void updateReaction(Reaction.ReactionTrigger type, String data, int value)
+	{
+		buddyUIE.updateReaction(type, data, value);
 	}
 	
 	public void setBuddyType(BuddyType buddyType)

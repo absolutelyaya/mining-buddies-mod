@@ -3,11 +3,12 @@ package yaya.miningbuddies.Buddies;
 public class Reaction
 {
 	public final ReactionTrigger type;
+	public final String animation;
 	
-	final String animation;
 	String data;
 	int min = Integer.MIN_VALUE;
 	int max = Integer.MAX_VALUE;
+	int weight = 0;
 	
 	public Reaction(ReactionTrigger type, String animation)
 	{
@@ -28,6 +29,16 @@ public class Reaction
 	public void setData(String data)
 	{
 		this.data = data;
+	}
+	
+	public void setWeight(int weight)
+	{
+		this.weight = weight;
+	}
+	
+	public int getWeight()
+	{
+		return weight;
 	}
 	
 	public boolean isAppropriate(String data, int value)
