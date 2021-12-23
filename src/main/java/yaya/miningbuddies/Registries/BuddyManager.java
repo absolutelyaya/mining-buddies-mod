@@ -2,9 +2,7 @@ package yaya.miningbuddies.Registries;
 
 import com.google.common.collect.ImmutableMap;
 import com.google.gson.*;
-import com.mojang.brigadier.StringReader;
 import net.minecraft.client.util.math.Vector2f;
-import net.minecraft.command.argument.ItemStringReader;
 import net.minecraft.resource.JsonDataLoader;
 import net.minecraft.resource.ResourceManager;
 import net.minecraft.util.Identifier;
@@ -116,13 +114,13 @@ public class BuddyManager extends JsonDataLoader
 		switch(type)
 		{
 			case PICKUP -> {
-				String item = JsonHelper.getString(object, "item");
-				if(new ItemStringReader(new StringReader(item), false).getItem() == null)
+				Identifier itemID = Identifier.tryParse(JsonHelper.getString(object, "item"));
+				if(itemID == null || Registry.ITEM.getOrEmpty(itemID).isEmpty())
 				{
-					reactionError(type, id, "Item '" + item + "' invalid.");
+					reactionError(type, id, "Item '" + itemID + "' invalid.");
 					return null;
 				}
-				reaction.setData(item);
+				reaction.setData(itemID.toString());
 			}
 			case LIGHTLEVEL -> setIntValue(reaction, object);
 			case NEARBY -> {
@@ -134,7 +132,7 @@ public class BuddyManager extends JsonDataLoader
 					Identifier entityID = Identifier.tryParse(entity);
 					if(entityID != null)
 					{
-						var e = Registry.ENTITY_TYPE.getOrEmpty(id);
+						var e = Registry.ENTITY_TYPE.getOrEmpty(entityID);
 						if(e.isPresent())
 							reaction.setData(entity);
 						else

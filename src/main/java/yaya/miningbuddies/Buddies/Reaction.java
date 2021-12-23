@@ -43,13 +43,22 @@ public class Reaction
 	
 	public boolean isAppropriate(String data, int value)
 	{
-		return value >= min && value <= max;
+		boolean b = true;
+		if(type.usesData)
+			b = data.equals(this.data);
+		return value >= min && value <= max && b;
 	}
 	
 	public enum ReactionTrigger
 	{
-		PICKUP,
-		LIGHTLEVEL,
-		NEARBY
+		PICKUP(true),
+		LIGHTLEVEL(false),
+		NEARBY(true);
+		
+		final boolean usesData;
+		ReactionTrigger(boolean usesData)
+		{
+			this.usesData = usesData;
+		}
 	}
 }

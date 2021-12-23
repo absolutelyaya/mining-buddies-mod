@@ -61,15 +61,17 @@ public class BuddyUIElement extends DrawableHelper
 				{
 					frameTime = 0f;
 					if(activeAnimation.frames() > 1)
-					{
 						frame++;
-					}
-					if(frame > activeAnimation.frames() - 1)
+					if(frame > activeAnimation.frames() - 1 || activeAnimation.frames() == 1)
 					{
 						frame = 0;
 						animLoops++;
 						if(activeAnimation.loops() != 0 && animLoops > activeAnimation.loops())
+						{
+							if(activeReaction != null)
+								activeReaction = null;
 							setActiveAnimation(AnimationState.IDLE);
+						}
 					}
 				}
 			}
