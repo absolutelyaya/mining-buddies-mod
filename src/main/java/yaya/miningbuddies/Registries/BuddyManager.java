@@ -124,6 +124,7 @@ public class BuddyManager extends JsonDataLoader
 			}
 			case LIGHTLEVEL -> setIntValue(reaction, object);
 			case NEARBY -> {
+				setIntValue(reaction, object);
 				JsonObject data = JsonHelper.getObject(object, "data");
 				if(JsonHelper.hasNumber(data, "distance") && JsonHelper.hasString(data, "entity"))
 				{

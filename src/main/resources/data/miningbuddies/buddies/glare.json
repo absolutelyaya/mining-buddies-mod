@@ -46,12 +46,13 @@
     },
     {
       "type": "nearby",
+      "min": 1,
       "data":
       {
         "distance": 8,
         "entity": "minecraft:zombie"
       },
-      "animation": "panic"
+      "animation": "grumpy"
     }
   ]
 }

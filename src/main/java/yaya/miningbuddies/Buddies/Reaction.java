@@ -21,14 +21,26 @@ public class Reaction
 		this.max = max;
 	}
 	
+	public int getMax() {
+		return max;
+	}
+	
 	public void setMin(int min)
 	{
 		this.min = min;
 	}
 	
+	public int getMin() {
+		return min;
+	}
+	
 	public void setData(String data)
 	{
 		this.data = data;
+	}
+	
+	public String getData() {
+		return data;
 	}
 	
 	public void setWeight(int weight)

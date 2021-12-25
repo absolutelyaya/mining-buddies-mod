@@ -9,6 +9,9 @@ import net.minecraft.nbt.NbtList;
 import net.minecraft.text.Text;
 import net.minecraft.text.TranslatableText;
 import net.minecraft.util.Identifier;
+import net.minecraft.util.math.Box;
+import net.minecraft.util.math.Vec3d;
+import net.minecraft.util.registry.Registry;
 import net.minecraft.world.World;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
@@ -23,15 +26,20 @@ import yaya.miningbuddies.Registries.BuddyManager;
 import yaya.miningbuddies.Settings.SettingsStorage;
 import yaya.miningbuddies.accessors.PlayerEntityAccessor;
 import yaya.miningbuddies.client.MiningBuddiesClientMod;
+import net.minecraft.entity.Entity;
 
-import java.util.ArrayList;
+import java.awt.*;
+import java.util.*;
 import java.util.List;
-import java.util.UUID;
 
 @Mixin(PlayerEntity.class)
 public abstract class PlayerEntityMixin extends LivingEntity implements PlayerEntityAccessor
 {
 	@Shadow public abstract void sendMessage(Text message, boolean actionBar);
+	
+	@Shadow public abstract void readCustomDataFromNbt(NbtCompound nbt);
+	
+	@Shadow public abstract void tick();
 	
 	@Unique private List<Buddy> ownedBuddies = new ArrayList<>();
 	@Unique private UUID activeBuddy = new UUID(0, 0);
@@ -40,6 +48,7 @@ public abstract class PlayerEntityMixin extends LivingEntity implements PlayerEn
 	{
 		super(entityType, world);
 	}
+	protected Map<String, Integer> watchEntityTypes = new HashMap<>();
 	
 	@Inject(method = "writeCustomDataToNbt", at = @At("RETURN"))
 	public void onWriteCustomDataToNbt(NbtCompound nbt, CallbackInfo ci)
@@ -86,7 +95,22 @@ public abstract class PlayerEntityMixin extends LivingEntity implements PlayerEn
 		{
 			Buddy b = getOwnedBuddyByID(id);
 			if(b != null)
+			{
 				MiningBuddiesClientMod.BUDDY_MINI_HUD.setBuddyType(b.getType());
+				List<Reaction> reactionList = b.getType().getReactions().get(Reaction.ReactionTrigger.NEARBY);
+				if(reactionList.size() > 0)
+				{
+					Map<String, Integer> map = new HashMap<>();
+					for (Reaction r : reactionList)
+					{
+						map.put(r.getData(), r.getMax());
+						System.out.println(r.getData() + r.getMax());
+					}
+					setWatchEntityTypes(map);
+				}
+				else
+					setWatchEntityTypes(new HashMap<>());
+			}
 		}
 		else
 			MiningBuddiesClientMod.BUDDY_MINI_HUD.setBuddyType(null);
@@ -158,5 +182,27 @@ public abstract class PlayerEntityMixin extends LivingEntity implements PlayerEn
 	public void buddyReactionTick()
 	{
 		MiningBuddiesClientMod.BUDDY_MINI_HUD.updateReaction(Reaction.ReactionTrigger.LIGHTLEVEL, "", world.getLightLevel(getBlockPos()));
+		if(watchEntityTypes.size() > 0)
+		{
+			for (String s : watchEntityTypes.keySet())
+			{
+				int distance = watchEntityTypes.get(s);
+				Vec3d p = new Vec3d(distance, distance, distance);
+				EntityType<?> type = Registry.ENTITY_TYPE.get(Identifier.tryParse(s));
+				List<? extends Entity> l = world.getEntitiesByClass(type.getBaseClass(), new Box(getPos().add(p),
+						getPos().add(p.multiply(-1D, -1D, -1D))), (c) -> c.getType().equals(type));
+				if(l.size() > 0)
+				{
+					MiningBuddiesClientMod.BUDDY_MINI_HUD.updateReaction(Reaction.ReactionTrigger.NEARBY,
+							EntityType.getId(l.get(0).getType()).toString(), l.size());
+				}
+			}
+		}
+	}
+	
+	@Override
+	public void setWatchEntityTypes(Map<String, Integer> list)
+	{
+		watchEntityTypes = list;
 	}
 }

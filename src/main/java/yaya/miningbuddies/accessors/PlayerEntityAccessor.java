@@ -1,9 +1,11 @@
 package yaya.miningbuddies.accessors;
 
+import net.minecraft.entity.Entity;
 import net.minecraft.util.Identifier;
 import yaya.miningbuddies.Buddies.Buddy;
 
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
 public interface PlayerEntityAccessor
@@ -23,4 +25,6 @@ public interface PlayerEntityAccessor
 	boolean hasBuddyOfType(Identifier type);
 	
 	void buddyReactionTick();
+	
+	void setWatchEntityTypes(Map<String, Integer> list);
 }
