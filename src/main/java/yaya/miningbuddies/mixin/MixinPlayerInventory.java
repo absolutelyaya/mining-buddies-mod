@@ -17,6 +17,5 @@ public class MixinPlayerInventory
 	void onPickup(ItemStack stack, CallbackInfoReturnable<Integer> cir)
 	{
 		MiningBuddiesClientMod.BUDDY_MINI_HUD.updateReaction(Reaction.ReactionTrigger.PICKUP, Registry.ITEM.getId(stack.getItem()).toString(), stack.getCount());
-		System.out.println(Registry.ITEM.getId(stack.getItem()));
 	}
 }

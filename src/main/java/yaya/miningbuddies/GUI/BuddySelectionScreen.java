@@ -36,11 +36,15 @@ public class BuddySelectionScreen extends Screen
 	protected void init()
 	{
 		list = new BuddyListWidget(client, width, height,  32, height - 32, 49, 133);
-		ServerPlayerEntity player = client.getServer().getPlayerManager().getPlayer(client.player.getUuid());
-		list.addAll(((PlayerEntityAccessor)player).getOwnedBuddies());
-		this.addSelectableChild(list);
-		this.addDrawableChild(new ButtonWidget(this.width / 2 - 100, this.height - 27, 200, 20,
-				ScreenTexts.DONE, (button) -> this.client.setScreen(null)));
+		if(client.player != null && client.getServer() != null)
+		{
+			ServerPlayerEntity player = client.getServer().getPlayerManager().getPlayer(client.player.getUuid());
+			if(player != null)
+				list.addAll(((PlayerEntityAccessor)player).getOwnedBuddies());
+			this.addSelectableChild(list);
+			this.addDrawableChild(new ButtonWidget(this.width / 2 - 100, this.height - 27, 200, 20,
+					ScreenTexts.DONE, (button) -> this.client.setScreen(null)));
+		}
 	}
 	
 	@Override

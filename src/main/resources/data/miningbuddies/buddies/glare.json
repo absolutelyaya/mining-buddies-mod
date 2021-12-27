@@ -53,6 +53,12 @@
         "entity": "minecraft:zombie"
       },
       "animation": "grumpy"
+    },
+    {
+      "type": "noteblock",
+      "weight": 2,
+      "max-chain": 100,
+      "animation": "sing"
     }
   ]
 }

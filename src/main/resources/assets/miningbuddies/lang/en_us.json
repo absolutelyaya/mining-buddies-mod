@@ -23,5 +23,7 @@
   "screen.miningbuddies.buddyselection.selected": "Active!",
 
   "category.miningbuddies.keybinds": "Mining Buddies",
-  "key.miningbuddies.buddymenu": "Open Buddy Selection Menu"
+  "key.miningbuddies.buddymenu": "Open Buddy Selection Menu",
+
+  "error.miningbuddies.missing.animation": "§4[MiningBuddies Error]: %d tried playing null animation! This usually means there's no idle animation defined."
 }

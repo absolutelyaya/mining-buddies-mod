@@ -6,6 +6,7 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.nbt.NbtElement;
 import net.minecraft.nbt.NbtList;
+import net.minecraft.sound.SoundEvent;
 import net.minecraft.text.Text;
 import net.minecraft.text.TranslatableText;
 import net.minecraft.util.Identifier;
@@ -28,7 +29,6 @@ import yaya.miningbuddies.accessors.PlayerEntityAccessor;
 import yaya.miningbuddies.client.MiningBuddiesClientMod;
 import net.minecraft.entity.Entity;
 
-import java.awt.*;
 import java.util.*;
 import java.util.List;
 
@@ -40,6 +40,8 @@ public abstract class PlayerEntityMixin extends LivingEntity implements PlayerEn
 	@Shadow public abstract void readCustomDataFromNbt(NbtCompound nbt);
 	
 	@Shadow public abstract void tick();
+	
+	@Shadow public abstract void playSound(SoundEvent sound, float volume, float pitch);
 	
 	@Unique private List<Buddy> ownedBuddies = new ArrayList<>();
 	@Unique private UUID activeBuddy = new UUID(0, 0);
@@ -70,14 +72,17 @@ public abstract class PlayerEntityMixin extends LivingEntity implements PlayerEn
 		if(nbt.contains(MiningBuddiesMod.MOD_ID))
 		{
 			NbtCompound nbt1 = (NbtCompound)nbt.get(MiningBuddiesMod.MOD_ID);
-			NbtList buddyList = nbt1.getList("ownedBuddies", 10);
-			List<Buddy> buddies = new ArrayList<>();
-			for (NbtElement buddy : buddyList)
+			if(nbt1 != null)
 			{
-				buddies.add(Buddy.deserialize((NbtCompound)buddy));
+				NbtList buddyList = nbt1.getList("ownedBuddies", 10);
+				List<Buddy> buddies = new ArrayList<>();
+				for (NbtElement buddy : buddyList)
+				{
+					buddies.add(Buddy.deserialize((NbtCompound)buddy));
+				}
+				setOwnedBuddies(buddies);
+				setActiveBuddy(nbt1.getUuid("activeBuddy"));
 			}
-			setOwnedBuddies(buddies);
-			setActiveBuddy(nbt1.getUuid("activeBuddy"));
 		}
 	}
 	
@@ -94,7 +99,7 @@ public abstract class PlayerEntityMixin extends LivingEntity implements PlayerEn
 		if(id != null)
 		{
 			Buddy b = getOwnedBuddyByID(id);
-			if(b != null)
+			if(b != null && b.getType() != null)
 			{
 				MiningBuddiesClientMod.BUDDY_MINI_HUD.setBuddyType(b.getType());
 				List<Reaction> reactionList = b.getType().getReactions().get(Reaction.ReactionTrigger.NEARBY);
@@ -204,5 +209,11 @@ public abstract class PlayerEntityMixin extends LivingEntity implements PlayerEn
 	public void setWatchEntityTypes(Map<String, Integer> list)
 	{
 		watchEntityTypes = list;
+	}
+	
+	@Override
+	public void useNoteBlock(int note)
+	{
+		MiningBuddiesClientMod.BUDDY_MINI_HUD.queueNote(note);
 	}
 }

@@ -159,6 +159,7 @@ public class BuddyManager extends JsonDataLoader
 					return null;
 				}
 			}
+			case NOTEBLOCK -> reaction.setMax(JsonHelper.getInt(object, "max-chain"));
 		}
 		return reaction;
 	}

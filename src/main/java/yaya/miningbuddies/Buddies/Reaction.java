@@ -65,7 +65,8 @@ public class Reaction
 	{
 		PICKUP(true),
 		LIGHTLEVEL(false),
-		NEARBY(true);
+		NEARBY(true),
+		NOTEBLOCK(false);
 		
 		final boolean usesData;
 		ReactionTrigger(boolean usesData)

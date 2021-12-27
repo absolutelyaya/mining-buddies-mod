@@ -5,6 +5,7 @@ import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.util.math.Vector2f;
 import net.minecraft.util.Identifier;
+import yaya.miningbuddies.GUI.Hud.BuddyUIElement;
 
 import java.util.List;
 import java.util.Map;
@@ -45,9 +46,14 @@ public class BuddyType
 		return buddySize;
 	}
 	
-	public Animation getAnimation(String id)
+	public Animation getAnimation(BuddyUIElement.AnimationState anim)
 	{
-		return animations.getOrDefault(id, animations.get("idle"));
+		if(anim == null)
+			return null;
+		if(animations.containsKey(anim.name().toLowerCase()))
+			return animations.get(anim.name().toLowerCase());
+		else
+			return getAnimation(anim.getDodgeAnim());
 	}
 	
 	public double getMoveSpeed()
@@ -58,5 +64,13 @@ public class BuddyType
 	public Map<Reaction.ReactionTrigger, List<Reaction>> getReactions()
 	{
 		return reactions;
+	}
+	
+	public static class MissingAnimationException extends Exception
+	{
+		public MissingAnimationException(String message, Throwable err)
+		{
+			super(message, err);
+		}
 	}
 }

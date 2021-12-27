@@ -53,6 +53,11 @@ public class BuddyMiniHud extends DrawableHelper
 		buddyUIE.updateReaction(type, data, value);
 	}
 	
+	public void queueNote(int note)
+	{
+		buddyUIE.queueNote(note);
+	}
+	
 	public void setBuddyType(BuddyType buddyType)
 	{
 		buddyUIE.setBuddyType(buddyType);
